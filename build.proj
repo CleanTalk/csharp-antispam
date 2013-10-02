@@ -1,0 +1,39 @@
+<Project ToolsVersion="4.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+        <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
+        <PropertyGroup>
+                <SolutionName>cleantalk.csharp</SolutionName>
+                <SolutionDir>$(SolutionName)</SolutionDir>
+                <Configuration>Release</Configuration>
+                <OutputDir>Outputs</OutputDir>
+                <ClearOutputPath>$(OutputDir)</ClearOutputPath>
+                <BuildOutputPath>..\$(OutputDir)</BuildOutputPath>
+                <LicenselOutputPath>$(OutputDir)</LicenselOutputPath>
+                <Optimize>true</Optimize>
+                <MvcBuildViews>true</MvcBuildViews>
+                <ManualBuild>true</ManualBuild>
+        </PropertyGroup>
+
+        <Target Name="Default" DependsOnTargets="Build">
+        </Target>
+
+        <Target Name="Publish" DependsOnTargets="Build" >
+                <MSBuild
+                        Projects="$(SolutionDir)\$(SolutionName).csproj "
+                        Targets="Build"
+                        Properties="Configuration=$(Configuration);Optimize=$(Optimize);OutputPath=$(BuildOutputPath)\$(SolutionName);" />
+        </Target>
+
+        <Target Name="Build" >
+                <MSBuild
+                        Projects="$(SolutionDir)\$(SolutionName).sln"
+                        Targets="Build"
+                        Properties="Configuration=$(Configuration);Optimize=$(Optimize);MvcBuildViews=$(MvcBuildViews);ManualBuild=$(ManualBuild);" />
+        </Target>
+
+        <Target Name="Clean">
+                <MSBuild Projects="$(SolutionDir)\$(SolutionName).sln" Targets="Clean" Properties="Configuration=$(Configuration)" />
+                <RemoveDir Directories="$(ClearOutputPath)" />
+        </Target>
+
+</Project>

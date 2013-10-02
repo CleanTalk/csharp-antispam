@@ -1,0 +1,17 @@
+_ReSharper.*
+*/[O|o]bj/*
+*/[B|b]in/*
+*.csproj.user
+*.ReSharper.*
+*Thumbs.db
+*.suo
+*.user
+/msbuild.log
+_ReSharper.*/
+*.log
+Outputs/*
+*.pidb
+*.userprefs
+*/submit.xml
+*.Publish.xml
+
