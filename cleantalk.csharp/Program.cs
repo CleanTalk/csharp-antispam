@@ -6,7 +6,7 @@ namespace cleantalk.csharp
     {
         public static int Main()
         {
-            const string testMessage = "Это тестовое сообщение";
+            const string testMessage = "This is test message";
             const string authKey = "your_auth_key";
 
             ICleartalk c = new Cleantalk();
