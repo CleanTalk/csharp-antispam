@@ -20,8 +20,6 @@ namespace cleantalk.csharp
             this.SenderIp = String.Empty;
             this.SenderNickname = String.Empty;
             this.PostInfo = String.Empty;
-            this.SubmitTime = DateTime.Now;
-            this.TimeZone = String.Empty;
             this.Feedback = String.Empty;
             this.Phone = String.Empty;
         }
@@ -130,7 +128,7 @@ namespace cleantalk.csharp
          * @var int
          */
         [DataMember(Name = "submit_time")]
-        public DateTime SubmitTime { get; set; }
+        public int SubmitTime { get; set; }
 
         /**
          * Is enable Java Script,
@@ -149,7 +147,7 @@ namespace cleantalk.csharp
          * @var string
          */
         [DataMember(Name = "tz")]
-        public string TimeZone { get; set; }
+        public int TimeZone { get; set; }
 
         /**
          * Feedback string,

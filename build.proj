@@ -19,20 +19,20 @@
 
         <Target Name="Publish" DependsOnTargets="Build" >
                 <MSBuild
-                        Projects="$(SolutionDir)\$(SolutionName).csproj "
+                        Projects="$(SolutionName).sln"
                         Targets="Build"
-                        Properties="Configuration=$(Configuration);Optimize=$(Optimize);OutputPath=$(BuildOutputPath)\$(SolutionName);" />
+                        Properties="Configuration=$(Configuration);Optimize=$(Optimize);OutputPath=$(BuildOutputPath);" />
         </Target>
 
         <Target Name="Build" >
                 <MSBuild
-                        Projects="$(SolutionDir)\$(SolutionName).sln"
+                        Projects="$(SolutionName).sln"
                         Targets="Build"
                         Properties="Configuration=$(Configuration);Optimize=$(Optimize);MvcBuildViews=$(MvcBuildViews);ManualBuild=$(ManualBuild);" />
         </Target>
 
         <Target Name="Clean">
-                <MSBuild Projects="$(SolutionDir)\$(SolutionName).sln" Targets="Clean" Properties="Configuration=$(Configuration)" />
+                <MSBuild Projects="$(SolutionName).sln" Targets="Clean" Properties="Configuration=$(Configuration)" />
                 <RemoveDir Directories="$(ClearOutputPath)" />
         </Target>
 

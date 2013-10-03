@@ -18,6 +18,12 @@ namespace cleantalk.csharp
         [DataMember(Name = "USER_AGENT")]
         public string UserAgent { get; set; }
 
+        [DataMember(Name = "profile")]
+        public bool Profile { get; set; }
+
+        [DataMember(Name = "sender_url")]
+        public string SenderUrl { get; set; }
+
         public SenderInfo()
         {
             this.RequestSubmitTime = DateTime.Now.ToFileTimeUtc();
