@@ -60,7 +60,7 @@ namespace cleantalk.csharp
          * @var int
          */
         [DataMember(Name = "ct_stop_words")]
-        public bool StoplistCheck { get; set; }
+        public int StoplistCheck { get; set; }
 
         /**
          * Language server response,
@@ -121,7 +121,7 @@ namespace cleantalk.csharp
          * @var int
          */
         [DataMember(Name = "ct_links")]
-        public bool IsAllowLinks { get; set; }
+        public int IsAllowLinks { get; set; }
 
         /**
          * Time form filling
@@ -140,7 +140,7 @@ namespace cleantalk.csharp
          * @var int
          */
         [DataMember(Name = "js_on")]
-        public bool IsEnableJs { get; set; }
+        public int IsEnableJs { get; set; }
 
         /**
          * user time zone
