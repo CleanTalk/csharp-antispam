@@ -16,7 +16,7 @@ namespace cleantalk.csharp.test
         }
 
         [Test]
-        public void TestNotSpamMessage()
+        public void NotSpamMessageTest()
         {
             var req1 = new CleantalkRequest(AuthKey)
             {
@@ -49,7 +49,7 @@ namespace cleantalk.csharp.test
         }
 
         [Test]
-        public void TestSpamMessage()
+        public void SpamMessageTest()
         {
             var req1 = new CleantalkRequest(AuthKey)
             {
@@ -64,8 +64,8 @@ namespace cleantalk.csharp.test
                     Profile = false
                 }),
                 SenderIp = "91.207.4.192",
-                SenderEmail = "keanu8dh.smith@gmail.com",
-                SenderNickname = "Mike",
+                SenderEmail = "stop_email@example.com",
+                SenderNickname = "Haker",
                 IsAllowLinks = 0,
                 IsEnableJs = 1,
                 SubmitTime = 12,
