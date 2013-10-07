@@ -18,6 +18,7 @@
         </Target>
 
         <Target Name="Publish" DependsOnTargets="Build" >
+		<CallTarget Targets="CopyLicenses"/>
                 <MSBuild
                         Projects="$(SolutionName).sln"
                         Targets="Build"
@@ -38,6 +39,10 @@
 
 	<Target Name="Tests" DependsOnTargets="Build">
 		<Exec Command="run-nunit-con.cmd" />
+	</Target>
+
+	<Target Name="CopyLicenses">
+		<Copy SourceFiles="LICENSE" DestinationFiles="$(LicenselOutputPath)\LICENSE" />
 	</Target>
 
 </Project>
