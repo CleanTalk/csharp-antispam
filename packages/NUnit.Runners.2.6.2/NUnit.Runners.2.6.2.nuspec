@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>NUnit</id>
+    <id>NUnit.Runners</id>
     <version>2.6.2</version>
-    <title>NUnit</title>
+    <title>NUnit.Runners</title>
     <authors>Charlie Poole</authors>
     <owners>Charlie Poole</owners>
     <licenseUrl>http://nunit.org/nuget/license.html</licenseUrl>
@@ -14,15 +14,11 @@
 
 Version 2.6 is the seventh major release of this well-known and well-tested programming tool.
 
-This package includes only the framework assembly. You will need to install the NUnit.Runners package unless you are using a third-party runner.</description>
+This package includes the NUnit console, gui and pnunit runners and is compatible with all NUnit framework versions 2.0 through 2.6. The NUnit project editor is also included.</description>
     <summary>NUnit is a unit-testing framework for all .Net languages with a strong TDD focus.</summary>
-    <releaseNotes>Version 2.6 is the seventh major release of NUnit.
-
-Unlike earlier versions, this package includes only the framework assembly. You will need to install the NUnit.Runners package unless you are using a third-party runner.
-
-The nunit.mocks assembly is now provided by the NUnit.Mocks package. The pnunit.framework assembly is provided by the pNUnit package.</releaseNotes>
+    <releaseNotes />
     <copyright />
     <language>en-US</language>
-    <tags>test testing tdd framework fluent assert theory plugin addin</tags>
+    <tags>test testing tdd runner</tags>
   </metadata>
 </package>

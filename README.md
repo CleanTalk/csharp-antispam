@@ -21,42 +21,58 @@ API sends a comment's text and several previous approved comments to the servers
 ## SPAM test for text comment sample
 
 ```c#
-            const string testMessage = "This is test message";
-            const string authKey = "your_auth_key";
+    [TestFixture]
+    public class CheckMessageTests
+    {
+        const string AuthKey = "your_auth_key";
 
-            ICleartalk c = new Cleantalk();
+        private ICleartalk _cleantalk;
 
-            //test CheckMessage
-            var req1 = new CleantalkRequest(authKey)
-                {
-                    Message = testMessage,
-                    Example = testMessage
-                };
-            var res1 = c.CheckMessage(req1);
-            Console.WriteLine("Result={0}\n\n", WebHelper.JsonSerialize(res1));
+        [SetUp]
+        protected void SetUp()
+        {
+            this._cleantalk = new Cleantalk();
+        }
 
-            //test CheckNewUser
-            var req2 = new CleantalkRequest(authKey)
-                {
-                    SenderNickname = "testUserNickName",
-                    SenderEmail = "testUserNickName@test.ru",
-                    IsEnableJs = true
-                };
-            var res2 = c.CheckNewUser(req2);
-            Console.WriteLine("Result={0}\n\n", WebHelper.JsonSerialize(res2));
+        [Test]
+        public void NotSpamMessageTest()
+        {
+            var req1 = new CleantalkRequest(AuthKey)
+            {
+                Message = "This is great storm!",
+                Example = "Formula 1 organisers are monitoring Tropical Storm Fitow that is passing through parts of Asia ahead of this weekend's Korean Grand Prix.",
+                ResponseLang = "en",
+                SenderInfo = WebHelper.JsonSerialize(new SenderInfo
+                    {
+                        CmsLang = "en",
+                        Refferrer = "http://www.bbc.co.uk/sport",
+                        UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
+                        Profile = false
+                    }),
+                SenderIp = "91.207.4.192",
+                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderNickname = "Mike",
+                IsAllowLinks = 0,
+                IsEnableJs = 1,
+                SubmitTime = 12,
+                StoplistCheck = 0,
+                TimeZone = 2
+            };
 
-            //test SendFeedback
-            var req3 = new CleantalkRequest(authKey)
-                {
-                    Feedback = "This is super feedback!"
-                };
-            var res3 = c.SendFeedback(req3);
-            Console.WriteLine("Result={0}\n\n", WebHelper.JsonSerialize(res3));
+            var res1 = _cleantalk.CheckMessage(req1);
+
+            Assert.IsNotNull(res1);
+            Assert.IsNotNullOrEmpty(res1.Id);
+            Assert.IsTrue(res1.IsAllow);
+            Assert.IsNotNullOrEmpty(res1.Comment);
+        }
+
+    }
 
 ```
 
 ## API Response description
-API returns PHP object:
+API returns response object:
   * allow (0|1) - allow to publish or not, in other words spam or ham
   * comment (string) - server comment for requests.
   * id (string MD5 HEX hash) - unique request idenifier.

@@ -36,4 +36,8 @@
                 <RemoveDir Directories="$(ClearOutputPath)" />
         </Target>
 
+	<Target Name="Tests" DependsOnTargets="Build">
+		<Exec Command="run-nunit-con.cmd" />
+	</Target>
+
 </Project>

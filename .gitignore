@@ -15,3 +15,6 @@ Outputs/*
 */submit.xml
 *.Publish.xml
 
+/cleantalk.csharp.test.VisualState.xml
+
+/TestResult.xml
