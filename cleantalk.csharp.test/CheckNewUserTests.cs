@@ -5,8 +5,6 @@ namespace cleantalk.csharp.test
     [TestFixture]
     public class CheckNewUserTests
     {
-        const string AuthKey = "y3ateqen";
-
         private ICleartalk _cleantalk;
 
         [SetUp]
@@ -18,7 +16,7 @@ namespace cleantalk.csharp.test
         [Test]
         public void CheckNewUserTest()
         {
-            var req1 = new CleantalkRequest(AuthKey)
+            var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
                 ResponseLang = "en",
                 Agent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",

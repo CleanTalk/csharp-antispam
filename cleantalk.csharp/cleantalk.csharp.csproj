@@ -58,6 +58,7 @@
     <Compile Include="Cleantalk.cs" />
     <Compile Include="CleantalkRequest.cs" />
     <Compile Include="CleantalkResponse.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="ICleartalk.cs" />
     <Compile Include="MethodType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

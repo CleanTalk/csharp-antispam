@@ -12,7 +12,7 @@ namespace cleantalk.csharp
             this.DebugLevel = 0;
             this.ServerChange = false;
             this.StayOnServer = false;
-            this.ServerUrl = "http://moderate3.cleantalk.ru/api2.0";
+            this.ServerUrl = Constants.ServerUrl;
         }
 
         /**

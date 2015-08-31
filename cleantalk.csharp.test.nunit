@@ -1,9 +1,0 @@
-﻿<NUnitProject>
-  <Settings activeconfig="Debug" />
-  <Config name="Debug" binpathtype="Auto">
-    <assembly path="cleantalk.csharp.test\bin\Debug\cleantalk.csharp.test.dll" />
-  </Config>
-  <Config name="Release" binpathtype="Auto">
-    <assembly path="cleantalk.csharp.test\bin\Release\cleantalk.csharp.test.dll" />
-  </Config>
-</NUnitProject>

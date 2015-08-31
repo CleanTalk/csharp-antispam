@@ -10,6 +10,7 @@ _ReSharper.*
 _ReSharper.*/
 *.log
 Outputs/*
+build/
 *.pidb
 *.userprefs
 */submit.xml
@@ -18,3 +19,6 @@ Outputs/*
 /cleantalk.csharp.test.VisualState.xml
 
 /TestResult.xml
+*.orig
+packages/**/
+.~*#

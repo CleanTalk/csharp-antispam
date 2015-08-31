@@ -6,8 +6,6 @@ namespace cleantalk.csharp
     [DataContract]
     public class CleantalkRequest
     {
-        public const string Version = "0.7";
-
         public CleantalkRequest(string authKey)
         {
             this.Message = String.Empty;
@@ -136,7 +134,7 @@ namespace cleantalk.csharp
          * Status:
          *  null - JS html code not inserted into phpBB templates
          *  0 - JS disabled at the client browser
-         *  1 - JS enabled at the client broswer
+         *  1 - JS enabled at the client browser
          * @var int
          */
         [DataMember(Name = "js_on")]

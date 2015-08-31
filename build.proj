@@ -3,46 +3,72 @@
 
         <PropertyGroup>
                 <SolutionName>cleantalk.csharp</SolutionName>
-                <SolutionDir>$(SolutionName)</SolutionDir>
+                <SolutionDir>.\</SolutionDir>
                 <Configuration>Release</Configuration>
-                <OutputDir>Outputs</OutputDir>
+                <OutputDir>Build</OutputDir>
                 <ClearOutputPath>$(OutputDir)</ClearOutputPath>
                 <BuildOutputPath>..\$(OutputDir)</BuildOutputPath>
-                <LicenselOutputPath>$(OutputDir)</LicenselOutputPath>
                 <Optimize>true</Optimize>
                 <MvcBuildViews>true</MvcBuildViews>
                 <ManualBuild>true</ManualBuild>
+
+		<NUnitUtilityPath>$(SolutionDir)\packages\NUnit.Runners.2.6.4\tools\nunit-console.exe</NUnitUtilityPath>
         </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<TestsProjects Include="**\*test.csproj" />
+	</ItemGroup>
 
         <Target Name="Default" DependsOnTargets="Build">
         </Target>
 
-        <Target Name="Publish" DependsOnTargets="Build" >
-		<CallTarget Targets="CopyLicenses"/>
-                <MSBuild
-                        Projects="$(SolutionName).sln"
-                        Targets="Build"
-                        Properties="Configuration=$(Configuration);Optimize=$(Optimize);OutputPath=$(BuildOutputPath);" />
-        </Target>
-
         <Target Name="Build" >
-                <MSBuild
-                        Projects="$(SolutionName).sln"
-                        Targets="Build"
-                        Properties="Configuration=$(Configuration);Optimize=$(Optimize);MvcBuildViews=$(MvcBuildViews);ManualBuild=$(ManualBuild);" />
+		<MSBuild
+			Projects="$(SolutionDir)\$(SolutionName).sln"
+			Targets="Build"
+			Properties="TranformOnBuild=True;Configuration=$(Configuration);Optimize=$(Optimize);MvcBuildViews=$(MvcBuildViews);ManualBuild=$(ManualBuild);OutputPath=$(BuildOutputPath);">
+			<Output TaskParameter="TargetOutputs" ItemName="Assemblies" />
+		</MSBuild>
         </Target>
 
-        <Target Name="Clean">
-                <MSBuild Projects="$(SolutionName).sln" Targets="Clean" Properties="Configuration=$(Configuration)" />
-                <RemoveDir Directories="$(ClearOutputPath)" />
-        </Target>
-
-	<Target Name="Tests" DependsOnTargets="Build">
-		<Exec Command="run-nunit-con.cmd" />
+	<Target Name="Clean">
+		<MSBuild
+			Projects="$(SolutionDir)\$(SolutionName).sln"
+			Targets="Clean"
+			Properties="Configuration=$(Configuration)" />
+		<RemoveDir Directories="$(ClearOutputPath)" />
 	</Target>
 
-	<Target Name="CopyLicenses">
-		<Copy SourceFiles="LICENSE" DestinationFiles="$(LicenselOutputPath)\LICENSE" />
+	<!-- Test tasks : region start -->
+
+	<Target Name="Build-Tests" Inputs="@(TestsProjects)" Outputs="%(Identity).Dummy">
+		<PropertyGroup>
+			<DefineConstants>DEBUG;TRACE</DefineConstants>
+			<DebugSymbols>true</DebugSymbols>
+			<DebugType>full</DebugType>
+			<Optimize>false</Optimize>
+			<Configuration>Debug</Configuration>
+		</PropertyGroup>
+		<MSBuild Projects="@(TestsProjects)"
+				 Targets="Build"
+				 Properties="TranformOnBuild=True;Configuration=$(Configuration);Optimize=$(Optimize);MvcBuildViews=$(MvcBuildViews);ManualBuild=$(ManualBuild);OutputPath=$(BuildOutputPath);" >
+			<Output TaskParameter="TargetOutputs" ItemName="TestAssemblies" />
+		</MSBuild>
+		<Message Text="Built: @(TestAssemblies)"/>
 	</Target>
+
+	<Target Name="Tests" Inputs="@(TestAssemblies)" Outputs="%(Identity).Dummy" DependsOnTargets="Build-Tests">
+		<Message Text="Testing: @(TestAssemblies)"/>
+		<Exec Command='$(NUnitUtilityPath) "@(TestAssemblies)"' />
+	</Target>
+
+	<!-- Test tasks : region end -->
 
 </Project>

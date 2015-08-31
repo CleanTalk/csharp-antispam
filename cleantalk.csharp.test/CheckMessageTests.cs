@@ -5,8 +5,6 @@ namespace cleantalk.csharp.test
     [TestFixture]
     public class CheckMessageTests
     {
-        const string AuthKey = "y3ateqen";
-
         private ICleartalk _cleantalk;
 
         [SetUp]
@@ -18,7 +16,7 @@ namespace cleantalk.csharp.test
         [Test]
         public void NotSpamMessageTest()
         {
-            var req1 = new CleantalkRequest(AuthKey)
+            var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
                 Message = "This is great storm!",
                 Example = "Formula 1 organisers are monitoring Tropical Storm Fitow that is passing through parts of Asia ahead of this weekend's Korean Grand Prix.",
@@ -51,7 +49,7 @@ namespace cleantalk.csharp.test
         [Test]
         public void SpamMessageTest()
         {
-            var req1 = new CleantalkRequest(AuthKey)
+            var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
                 Message = "stop_word",
                 Example = "Example",
