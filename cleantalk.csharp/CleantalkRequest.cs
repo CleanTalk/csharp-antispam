@@ -25,6 +25,34 @@ namespace cleantalk.csharp
         private SenderInfo _senderInfo;
 
         /// <summary>
+        ///     All http request headers
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "all_headers")]
+        public string AllHeaders { get; set; }
+
+        /// <summary>
+        ///     Last error number
+        ///     @var integer
+        /// </summary>
+        [DataMember(Name = "last_error_no")]
+        public int LastErrorNo { get; set; }
+
+        /// <summary>
+        ///     Last error time
+        ///     @var integer
+        /// </summary>
+        [DataMember(Name = "last_error_time")]
+        public int LastErrorTime { get; set; }
+
+        /// <summary>
+        ///     Last error text
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "last_error_text")]
+        public string LastErrorText { get; set; }
+
+        /// <summary>
         ///     User message
         ///     @var string
         /// </summary>
@@ -35,7 +63,7 @@ namespace cleantalk.csharp
         ///     Post example with last comments
         ///     @var string
         /// </summary>
-        [DataMember(Name = "base_text")]
+        [DataMember(Name = "example")]
         public string Example { get; set; }
 
         /// <summary>
@@ -57,7 +85,7 @@ namespace cleantalk.csharp
         ///     valid are 0|1
         ///     @var int
         /// </summary>
-        [DataMember(Name = "ct_stop_words")]
+        [DataMember(Name = "stoplist_check")]
         public int StoplistCheck { get; set; }
 
         /// <summary>
@@ -72,21 +100,21 @@ namespace cleantalk.csharp
         ///     User IP
         ///     @var strings
         /// </summary>
-        [DataMember(Name = "session_ip")]
+        [DataMember(Name = "sender_ip")]
         public string SenderIp { get; set; }
 
         /// <summary>
         ///     User email
         ///     @var strings
         /// </summary>
-        [DataMember(Name = "user_email")]
+        [DataMember(Name = "sender_email")]
         public string SenderEmail { get; set; }
 
         /// <summary>
         ///     User nickname
         ///     @var string
         /// </summary>
-        [DataMember(Name = "user_name")]
+        [DataMember(Name = "sender_nickname")]
         public string SenderNickname { get; set; }
 
         /// <summary>
@@ -118,7 +146,7 @@ namespace cleantalk.csharp
         ///     valid are 1|0
         ///     @var int
         /// </summary>
-        [DataMember(Name = "ct_links")]
+        [DataMember(Name = "allow_links")]
         public int IsAllowLinks { get; set; }
 
         /// <summary>

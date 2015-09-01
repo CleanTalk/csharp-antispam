@@ -68,7 +68,7 @@ namespace cleantalk.csharp
         ///     @var string
         /// </summary>
         [DataMember(Name = "fast_submit")]
-        public int IsFastSubmit { get; set; }
+        public string IsFastSubmit { get; set; }
 
         /// <summary>
         ///     Is spam comment
@@ -125,6 +125,13 @@ namespace cleantalk.csharp
         /// </summary>
         [DataMember(Name = "inactive")]
         public bool IsInactive { get; set; }
+
+        /// <summary>
+        ///     Account status
+        ///     @var int
+        /// </summary>
+        [DataMember(Name = "account_status")]
+        public int AccountStatus { get; set; }
 
         /// <summary>
         ///     Feedback receive flag, 1|0
