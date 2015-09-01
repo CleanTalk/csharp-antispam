@@ -46,7 +46,8 @@ namespace cleantalk.csharp.test
                 Agent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
                 SenderIp = "91.207.4.193",
                 SenderEmail = "stop_email@example.com",
-                SenderNickname = "Hacker"
+                SenderNickname = "Hacker",
+                IsEnableJs = 1,
             };
 
             var res1 = _cleantalk.CheckNewUser(req1);
