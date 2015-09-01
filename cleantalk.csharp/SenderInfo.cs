@@ -26,10 +26,10 @@ namespace cleantalk.csharp
 
         public SenderInfo()
         {
-            this.RequestSubmitTime = DateTime.Now.ToFileTimeUtc();
-            this.CmsLang = String.Empty;
-            this.Refferrer = String.Empty;
-            this.UserAgent = String.Empty;
+            RequestSubmitTime = DateTime.Now.ToFileTimeUtc();
+            CmsLang = String.Empty;
+            Refferrer = String.Empty;
+            UserAgent = String.Empty;
         }
     }
 }

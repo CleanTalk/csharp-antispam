@@ -1,5 +1,4 @@
-﻿
-namespace cleantalk.csharp
+﻿namespace cleantalk.csharp
 {
     public enum MethodType
     {

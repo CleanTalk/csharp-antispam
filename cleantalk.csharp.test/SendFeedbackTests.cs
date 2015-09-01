@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace cleantalk.csharp.test
 {
@@ -10,24 +11,72 @@ namespace cleantalk.csharp.test
         [SetUp]
         protected void SetUp()
         {
-            this._cleantalk = new Cleantalk();
+            _cleantalk = new Cleantalk();
         }
 
         [Test]
         public void SendFeedbackTest()
         {
+            //send message1
             var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
+                Message = "bla-bla-bla",
+                Example = "",
                 ResponseLang = "en",
-                Feedback = "42a7ae178d1cfc4eee6431ce30ecc567:1;1e63750c2fce77b5199594e0d0ea2de7:0;e9687ba3f6751e218d7ef1476b8f72a9:0;d05b8dd0e0d8fad37eb0f2d0d3f42f03:1;"
+                SenderInfo = WebHelper.JsonSerialize(new SenderInfo
+                {
+                    CmsLang = "en",
+                    Refferrer = "http://www.bbc.co.uk/sport",
+                    UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
+                    Profile = false
+                }),
+                SenderIp = "91.207.4.192",
+                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderNickname = "Mike",
+                IsAllowLinks = 0,
+                IsEnableJs = 1,
+                SubmitTime = 12,
+                StoplistCheck = 0
+            };
+            var res1 = _cleantalk.CheckMessage(req1);
+            Assert.IsTrue(res1.IsAllow);
+
+            //send message2
+            var req2 = new CleantalkRequest(TestConstants.AuthKey)
+            {
+                Message = "This is great storm!",
+                Example = "Formula 1 organisers are monitoring Tropical Storm Fitow that is passing through parts of Asia ahead of this weekend's Korean Grand Prix.",
+                ResponseLang = "en",
+                SenderInfo = WebHelper.JsonSerialize(new SenderInfo
+                {
+                    CmsLang = "en",
+                    Refferrer = "http://www.bbc.co.uk/sport",
+                    UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
+                    Profile = false
+                }),
+                SenderIp = "91.207.4.192",
+                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderNickname = "Mike",
+                IsAllowLinks = 0,
+                IsEnableJs = 1,
+                SubmitTime = 12,
+                StoplistCheck = 0
+            };
+            var res2 = _cleantalk.CheckMessage(req2);
+            Assert.IsTrue(res2.IsAllow);
+
+            //send feedback
+            var feedbackReq = new CleantalkRequest(TestConstants.AuthKey)
+            {
+                ResponseLang = "en",
+                Feedback = String.Format("{0}:1;{1}:0;", res1.Id, res2.Id)
             };
 
-            var res1 = _cleantalk.SendFeedback(req1);
+            var feedbackResp = _cleantalk.SendFeedback(feedbackReq);
 
-            Assert.IsNotNull(res1);
-            Assert.IsNotNullOrEmpty(res1.Id);
-            Assert.IsTrue(res1.IsAllow);
-            Assert.IsNotNullOrEmpty(res1.Comment);
+            Assert.IsNotNull(feedbackResp);
+            Assert.IsNotNullOrEmpty(feedbackResp.Comment);
+            Assert.IsTrue(feedbackResp.Received);
         }
     }
 }

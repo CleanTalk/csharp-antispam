@@ -10,7 +10,7 @@ namespace cleantalk.csharp
     public static class WebHelper
     {
         /// <summary>
-        /// Converts input string to byte array
+        ///     Converts input string to byte array
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -23,7 +23,7 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        /// Compresses input byte array
+        ///     Compresses input byte array
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -41,19 +41,19 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        /// Convert input string from ISO8859-1 to UTF8
+        ///     Convert input string from ISO8859-1 to UTF8
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public static string ConvertIso88591ToUtf8(string input)
         {
-            return String.IsNullOrWhiteSpace(input) ?
-                String.Empty :
-                Encoding.UTF8.GetString(Encoding.GetEncoding("ISO8859-1").GetBytes(input));
+            return String.IsNullOrWhiteSpace(input)
+                ? String.Empty
+                : Encoding.UTF8.GetString(Encoding.GetEncoding("ISO8859-1").GetBytes(input));
         }
 
         /// <summary>
-        /// Encodes byte array to base64 string
+        ///     Encodes byte array to base64 string
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -65,7 +65,7 @@ namespace cleantalk.csharp
         #region JSON serialize/deserialize
 
         /// <summary>
-        /// Serialize object to json string
+        ///     Serialize object to json string
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -83,7 +83,7 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        /// Deserialize object from json string
+        ///     Deserialize object from json string
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="json"></param>
