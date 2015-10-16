@@ -1,4 +1,6 @@
-﻿namespace cleantalk.csharp
+﻿// ReSharper disable InconsistentNaming
+
+namespace cleantalk.csharp.Enums
 {
     public enum MethodType
     {

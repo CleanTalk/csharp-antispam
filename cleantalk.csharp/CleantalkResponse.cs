@@ -1,25 +1,19 @@
-﻿using System;
+﻿using System.Linq;
 using System.Runtime.Serialization;
+using cleantalk.csharp.Enums;
+using cleantalk.csharp.Helpers;
 
 namespace cleantalk.csharp
 {
     [DataContract]
     public class CleantalkResponse
     {
-        public CleantalkResponse()
-        {
-            Comment = String.Empty;
-            ErrStr = String.Empty;
-            Sms = String.Empty;
-            SmsErrorText = String.Empty;
-        }
-
         /// <summary>
         ///     Is stop words
         ///     @var int
         /// </summary>
         [DataMember(Name = "stop_words")]
-        public int StopWords { get; set; }
+        public int? StopWords { get; set; }
 
         /// <summary>
         ///     Cleantalk comment
@@ -33,14 +27,14 @@ namespace cleantalk.csharp
         ///     @var int
         /// </summary>
         [DataMember(Name = "blacklisted")]
-        public int Blacklisted { get; set; }
+        public int? Blacklisted { get; set; }
 
         /// <summary>
         ///     Is allow, 1|0
         ///     @var int
         /// </summary>
         [DataMember(Name = "allow")]
-        public bool IsAllow { get; set; }
+        public bool? IsAllow { get; set; }
 
         /// <summary>
         ///     Request ID
@@ -54,7 +48,7 @@ namespace cleantalk.csharp
         ///     @var int
         /// </summary>
         [DataMember(Name = "errno")]
-        public int ErrNo { get; set; }
+        public int? ErrNo { get; set; }
 
         /// <summary>
         ///     Error string
@@ -75,92 +69,74 @@ namespace cleantalk.csharp
         ///     @var string
         /// </summary>
         [DataMember(Name = "spam")]
-        public bool IsSpam { get; set; }
+        public bool? IsSpam { get; set; }
 
         /// <summary>
         ///     Is JS
         ///     @var type
         /// </summary>
         [DataMember(Name = "js_disabled")]
-        public bool IsJs { get; set; }
-
-        /// <summary>
-        ///     Sms check
-        ///     @var type
-        /// </summary>
-        [DataMember(Name = "sms_allow")]
-        public bool IsSmsAllow { get; set; }
-
-        /// <summary>
-        ///     Sms code result
-        ///     @var type
-        /// </summary>
-        [DataMember(Name = "sms")]
-        public string Sms { get; set; }
-
-        /// <summary>
-        ///     Sms error code
-        ///     @var type
-        /// </summary>
-        [DataMember(Name = "sms_error_code")]
-        public int SmsErrorCode { get; set; }
-
-        /// <summary>
-        ///     Sms error code
-        ///     @var type
-        /// </summary>
-        [DataMember(Name = "sms_error_text")]
-        public string SmsErrorText { get; set; }
+        public int? IsJsDisabled { get; set; }
 
         /// <summary>
         ///     Stop queue message, 1|0
         ///     @var int
         /// </summary>
         [DataMember(Name = "stop_queue")]
-        public bool StopQueue { get; set; }
+        public int? StopQueue { get; set; }
 
         /// <summary>
         ///     Account should be deactivated after registration, 1|0
         ///     @var int
         /// </summary>
         [DataMember(Name = "inactive")]
-        public bool IsInactive { get; set; }
+        public int? IsInactive { get; set; }
 
         /// <summary>
         ///     Account status
         ///     @var int
         /// </summary>
         [DataMember(Name = "account_status")]
-        public int AccountStatus { get; set; }
+        public int? AccountStatus { get; set; }
 
         /// <summary>
         ///     Feedback receive flag, 1|0
         ///     @var int
         /// </summary>
         [DataMember(Name = "received")]
-        public bool Received { get; set; }
+        public bool? Received { get; set; }
 
-        /// <summary>
-        ///     Processing response data after action
-        /// </summary>
-        /// <returns></returns>
-        public CleantalkResponse Postprocessing()
+        [DataMember(Name = "codes")]
+        public string CodesString
         {
-            if (_isProcessed)
+            get
             {
-                return this;
+                return Codes == null || !Codes.Any()
+                    ? null
+                    : Codes
+                        .Select(x => x.ToString())
+                        .Aggregate((x, y) => x + " " + y);
             }
 
-            Comment = WebHelper.ConvertIso88591ToUtf8(Comment);
-            ErrStr = WebHelper.ConvertIso88591ToUtf8(ErrStr);
-            Sms = WebHelper.ConvertIso88591ToUtf8(Sms);
-            SmsErrorText = WebHelper.ConvertIso88591ToUtf8(SmsErrorText);
-
-            _isProcessed = true;
-
-            return this;
+            set
+            {
+                if (string.IsNullOrEmpty(value)) Codes = null;
+                Codes = value.Split(' ')
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Select(x => x.ToEnum<AnswerCodeType>())
+                    .Where(x => x != null)
+                    .Select(x => x.Value)
+                    .ToArray();
+            }
         }
 
-        private bool _isProcessed;
+        [IgnoreDataMember]
+        public AnswerCodeType[] Codes { get; private set; }
+
+        public CleantalkResponse()
+        {
+            Comment = string.Empty;
+            ErrStr = string.Empty;
+        }
     }
 }

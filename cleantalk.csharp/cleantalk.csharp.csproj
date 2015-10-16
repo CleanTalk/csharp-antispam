@@ -49,6 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -59,11 +60,15 @@
     <Compile Include="CleantalkRequest.cs" />
     <Compile Include="CleantalkResponse.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Enums\AnswerCodeType.cs" />
+    <Compile Include="Enums\MethodType.cs" />
+    <Compile Include="Helpers\ConvertHelper.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Helpers\WebHelper.cs" />
     <Compile Include="ICleartalk.cs" />
-    <Compile Include="MethodType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PostInfo.cs" />
     <Compile Include="SenderInfo.cs" />
-    <Compile Include="WebHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

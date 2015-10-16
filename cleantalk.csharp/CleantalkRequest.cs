@@ -1,57 +1,11 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using cleantalk.csharp.Helpers;
 
 namespace cleantalk.csharp
 {
     [DataContract]
     public class CleantalkRequest
     {
-        public CleantalkRequest(string authKey)
-        {
-            Message = String.Empty;
-            Example = String.Empty;
-            AuthKey = authKey;
-            Agent = String.Empty;
-            ResponseLang = String.Empty;
-            SenderEmail = String.Empty;
-            _senderInfo = new SenderInfo();
-            SenderIp = String.Empty;
-            SenderNickname = String.Empty;
-            PostInfo = String.Empty;
-            Feedback = String.Empty;
-            Phone = String.Empty;
-        }
-
-        private SenderInfo _senderInfo;
-
-        /// <summary>
-        ///     All http request headers
-        ///     @var string
-        /// </summary>
-        [DataMember(Name = "all_headers")]
-        public string AllHeaders { get; set; }
-
-        /// <summary>
-        ///     Last error number
-        ///     @var integer
-        /// </summary>
-        [DataMember(Name = "last_error_no")]
-        public int LastErrorNo { get; set; }
-
-        /// <summary>
-        ///     Last error time
-        ///     @var integer
-        /// </summary>
-        [DataMember(Name = "last_error_time")]
-        public int LastErrorTime { get; set; }
-
-        /// <summary>
-        ///     Last error text
-        ///     @var string
-        /// </summary>
-        [DataMember(Name = "last_error_text")]
-        public string LastErrorText { get; set; }
-
         /// <summary>
         ///     User message
         ///     @var string
@@ -60,41 +14,11 @@ namespace cleantalk.csharp
         public string Message { get; set; }
 
         /// <summary>
-        ///     Post example with last comments
-        ///     @var string
-        /// </summary>
-        [DataMember(Name = "example")]
-        public string Example { get; set; }
-
-        /// <summary>
         ///     Auth key
         ///     @var string
         /// </summary>
         [DataMember(Name = "auth_key")]
         public string AuthKey { get; set; }
-
-        /// <summary>
-        ///     Engine
-        ///     @var string
-        /// </summary>
-        [DataMember(Name = "agent")]
-        public string Agent { get; set; }
-
-        /// <summary>
-        ///     Is check for stoplist,
-        ///     valid are 0|1
-        ///     @var int
-        /// </summary>
-        [DataMember(Name = "stoplist_check")]
-        public int StoplistCheck { get; set; }
-
-        /// <summary>
-        ///     Language server response,
-        ///     valid are 'en' or 'ru'
-        ///     @var string
-        /// </summary>
-        [DataMember(Name = "response_lang")]
-        public string ResponseLang { get; set; }
 
         /// <summary>
         ///     User IP
@@ -122,39 +46,35 @@ namespace cleantalk.csharp
         ///     @var string
         /// </summary>
         [DataMember(Name = "sender_info")]
-        public string SenderInfo
+        public string SenderInfoString
         {
-            get
-            {
-                var result = WebHelper.JsonSerialize(_senderInfo);
-
-                return String.IsNullOrEmpty(result) ? String.Empty : result;
-            }
-
-            set { _senderInfo = WebHelper.JsonDeserialize<SenderInfo>(value); }
+            get { return WebHelper.JsonSerialize(SenderInfo); }
+            set { SenderInfo = WebHelper.JsonDeserialize<SenderInfo>(value); }
         }
+
+        [IgnoreDataMember]
+        public SenderInfo SenderInfo { get; set; }
 
         /// <summary>
         ///     Post info JSON string
         ///     @var string
         /// </summary>
         [DataMember(Name = "post_info")]
-        public string PostInfo { get; set; }
+        public string PostInfoString
+        {
+            get { return WebHelper.JsonSerialize(PostInfo); }
+            set { PostInfo = WebHelper.JsonDeserialize<PostInfo>(value); }
+        }
 
-        /// <summary>
-        ///     Is allow links, email and icq,
-        ///     valid are 1|0
-        ///     @var int
-        /// </summary>
-        [DataMember(Name = "allow_links")]
-        public int IsAllowLinks { get; set; }
+        [IgnoreDataMember]
+        public PostInfo PostInfo { get; set; }
 
         /// <summary>
         ///     Time form filling (seconds from start form filling till the form POST)
         ///     @var int
         /// </summary>
         [DataMember(Name = "submit_time")]
-        public int SubmitTime { get; set; }
+        public int? SubmitTime { get; set; }
 
         /// <summary>
         ///     Is enable Java Script (site visitor has JavaScript)
@@ -166,14 +86,7 @@ namespace cleantalk.csharp
         ///     @var int
         /// </summary>
         [DataMember(Name = "js_on")]
-        public int IsEnableJs { get; set; }
-
-        /// <summary>
-        ///     user time zone
-        ///     @var string
-        /// </summary>
-        [DataMember(Name = "tz")]
-        public string TimeZone { get; set; }
+        public int? IsJsEnable { get; set; }
 
         /// <summary>
         ///     Feedback string,
@@ -184,69 +97,15 @@ namespace cleantalk.csharp
         public string Feedback { get; set; }
 
         /// <summary>
-        ///     Phone number
-        ///     @var type
-        /// </summary>
-        [DataMember(Name = "phone")]
-        public string Phone { get; set; }
-
-        /// <summary>
         ///     Method name
         ///     @var string
         /// </summary>
         [DataMember(Name = "method_name")]
         public string MethodName { get; set; }
 
-        /// <summary>
-        ///     Processing request data before action
-        /// </summary>
-        /// <param name="methodType"></param>
-        /// <returns></returns>
-        public CleantalkRequest Preprocessing(MethodType methodType)
+        public CleantalkRequest(string authKey)
         {
-            if (_isProcessed)
-            {
-                return this;
-            }
-
-            if (String.IsNullOrWhiteSpace(AuthKey))
-            {
-                throw new ArgumentException("AuthKey is empty");
-            }
-
-            switch (methodType)
-            {
-                case MethodType.check_message:
-                    Message = WebHelper.Base64Encode(WebHelper.CompressData(WebHelper.StringToUtf8(Message)));
-                    Example = WebHelper.Base64Encode(WebHelper.CompressData(WebHelper.StringToUtf8(Example)));
-                    break;
-                case MethodType.check_newuser:
-                    if (String.IsNullOrWhiteSpace(SenderNickname))
-                    {
-                        throw new ArgumentException("SenderNickname is empty");
-                    }
-
-                    if (String.IsNullOrWhiteSpace(SenderEmail))
-                    {
-                        throw new ArgumentException("SenderEmail is empty");
-                    }
-
-                    break;
-                case MethodType.send_feedback:
-                    if (String.IsNullOrWhiteSpace(Feedback))
-                    {
-                        throw new ArgumentException("Feedback is empty");
-                    }
-
-                    break;
-            }
-
-            MethodName = methodType.ToString();
-            _isProcessed = true;
-
-            return this;
+            AuthKey = authKey;
         }
-
-        private bool _isProcessed;
     }
 }

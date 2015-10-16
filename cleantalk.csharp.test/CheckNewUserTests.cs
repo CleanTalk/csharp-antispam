@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Diagnostics;
+using System.Monads;
+using cleantalk.csharp.Helpers;
+using NUnit.Framework;
 
 namespace cleantalk.csharp.test
 {
@@ -7,10 +10,26 @@ namespace cleantalk.csharp.test
     {
         private ICleartalk _cleantalk;
 
-        [SetUp]
-        protected void SetUp()
+        [Test]
+        public void CheckNewSpamUserTest()
         {
-            _cleantalk = new Cleantalk();
+            var req1 = new CleantalkRequest(TestConstants.AuthKey)
+            {
+                SenderIp = "91.207.4.193",
+                SenderEmail = "stop_email@example.com",
+                SenderNickname = "Hacker",
+                IsJsEnable = 1
+            };
+
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
+            var res1 = _cleantalk.CheckNewUser(req1);
+            Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
+
+            Assert.IsNotNull(res1);
+            Assert.IsNotNullOrEmpty(res1.Id);
+            Assert.AreEqual(0, res1.IsInactive);
+            Assert.IsFalse(res1.IsAllow.With(x => x.Value));
+            Assert.IsNotNullOrEmpty(res1.Comment);
         }
 
         [Test]
@@ -18,45 +37,27 @@ namespace cleantalk.csharp.test
         {
             var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
-                ResponseLang = "en",
-                Agent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh.smith@gmail.com",
                 SenderNickname = "Mike",
-                IsAllowLinks = 0,
-                IsEnableJs = 1,
+                IsJsEnable = 1,
                 SubmitTime = 12
             };
-
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckNewUser(req1);
+            Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
-
-            Assert.IsTrue(res1.IsAllow);
+            Assert.AreEqual(0, res1.IsInactive);
+            Assert.IsTrue(res1.IsAllow.With(x => x.Value));
             Assert.IsNotNullOrEmpty(res1.Comment);
         }
 
-        [Test]
-        public void CheckNewSpamUserTest()
+        [SetUp]
+        protected void SetUp()
         {
-            var req1 = new CleantalkRequest(TestConstants.AuthKey)
-            {
-                ResponseLang = "en",
-                Agent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
-                SenderIp = "91.207.4.193",
-                SenderEmail = "stop_email@example.com",
-                SenderNickname = "Hacker",
-                IsEnableJs = 1,
-            };
-
-            var res1 = _cleantalk.CheckNewUser(req1);
-
-            Assert.IsNotNull(res1);
-            Assert.IsNotNullOrEmpty(res1.Id);
-
-            Assert.IsFalse(res1.IsAllow);
-            Assert.IsNotNullOrEmpty(res1.Comment);
+            _cleantalk = new Cleantalk();
         }
     }
 }

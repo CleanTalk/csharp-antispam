@@ -1,20 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
+using cleantalk.csharp.Enums;
+using cleantalk.csharp.Helpers;
 
 namespace cleantalk.csharp
 {
     [Serializable]
     public class Cleantalk : ICleartalk
     {
-        public Cleantalk()
-        {
-            DebugLevel = 0;
-            ServerChange = false;
-            StayOnServer = false;
-            ServerUrl = Constants.ServerUrl;
-        }
-
         /// <summary>
         ///     Debug level
         ///     @var int
@@ -57,23 +52,13 @@ namespace cleantalk.csharp
         /// </summary>
         public bool StayOnServer { get; set; }
 
-        /// <summary>
-        ///     Maximum data size in bytes
-        ///     @var int
-        /// </summary>
-        private const int dataMaxSise = 32768;
-
-        /// <summary>
-        ///     Data compression rate
-        ///     @var int
-        /// </summary>
-        private const int compressRate = 6;
-
-        /// <summary>
-        ///     Server connection timeout in seconds
-        ///     @var int
-        /// </summary>
-        private const int serverTimeout = 2;
+        public Cleantalk()
+        {
+            DebugLevel = 0;
+            ServerChange = false;
+            StayOnServer = false;
+            ServerUrl = Constants.ServerUrl;
+        }
 
         /// <summary>
         ///     Function checks whether it is possible to publish the message
@@ -82,11 +67,11 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckMessage(CleantalkRequest request)
         {
-            var postData = WebHelper.JsonSerialize(request.Preprocessing(MethodType.check_message));
+            var postData = WebHelper.JsonSerialize(Preprocessing(request, MethodType.check_message));
             var response = SendPostData(postData);
             var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
 
-            return result.Postprocessing();
+            return Postprocessing(result);
         }
 
         /// <summary>
@@ -96,11 +81,11 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckNewUser(CleantalkRequest request)
         {
-            var postData = WebHelper.JsonSerialize(request.Preprocessing(MethodType.check_newuser));
+            var postData = WebHelper.JsonSerialize(Preprocessing(request, MethodType.check_newuser));
             var response = SendPostData(postData);
             var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
 
-            return result.Postprocessing();
+            return Postprocessing(result);
         }
 
         /// <summary>
@@ -110,11 +95,70 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse SendFeedback(CleantalkRequest request)
         {
-            var postData = WebHelper.JsonSerialize(request.Preprocessing(MethodType.send_feedback));
+            var postData = WebHelper.JsonSerialize(Preprocessing(request, MethodType.send_feedback));
             var response = SendPostData(postData);
             var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
 
-            return result.Postprocessing();
+            return Postprocessing(result);
+        }
+
+        /// <summary>
+        ///     Processing response data after action
+        /// </summary>
+        /// <returns></returns>
+        private static CleantalkResponse Postprocessing(CleantalkResponse response)
+        {
+            response.Comment = ConvertHelper.ConvertIso88591ToUtf8(response.Comment);
+            response.ErrStr = ConvertHelper.ConvertIso88591ToUtf8(response.ErrStr);
+
+            return response;
+        }
+
+
+        /// <summary>
+        ///     Processing request data before action
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="methodType"></param>
+        /// <returns></returns>
+        private static CleantalkRequest Preprocessing(CleantalkRequest request, MethodType methodType)
+        {
+            if (string.IsNullOrWhiteSpace(request.AuthKey))
+            {
+                throw new ArgumentNullException("AuthKey is empty");
+            }
+
+            switch (methodType)
+            {
+                case MethodType.check_message:
+                    //nothing to do
+                    break;
+                case MethodType.check_newuser:
+                    if (string.IsNullOrWhiteSpace(request.SenderNickname))
+                    {
+                        throw new ArgumentNullException("SenderNickname is empty");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(request.SenderEmail))
+                    {
+                        throw new ArgumentNullException("SenderEmail is empty");
+                    }
+
+                    break;
+                case MethodType.send_feedback:
+                    if (string.IsNullOrWhiteSpace(request.Feedback))
+                    {
+                        throw new ArgumentNullException("Feedback is empty");
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("methodType", methodType, null);
+            }
+
+            request.MethodName = methodType.ToString();
+
+            return request;
         }
 
         /// <summary>
