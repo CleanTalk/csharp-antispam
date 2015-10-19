@@ -3,6 +3,10 @@ csharp-antispam
 
 CleanTalk service API for C#. It is invisible protection from spam, no captches, no puzzles, no animals and no math.
 
+## Actual API documentation
+  * [check_message](https://cleantalk.org/wiki/doku.php?id=check_message) - Check IPs, Emails and messages for spam activity
+  * [check_newuser](https://cleantalk.org/wiki/doku.php?id=check_newuser) - Check registrations of new users
+
 ## How does API stop spam?
 API uses several simple tests to stop spammers.
   * Spam bots signatures.
@@ -21,18 +25,13 @@ API sends a comment's text and several previous approved comments to the servers
 ## SPAM test for text comment sample
 
 ```c#
+
+    public const string AuthKey = "auth key";
+
     [TestFixture]
     public class CheckMessageTests
     {
-        const string AuthKey = "your_auth_key";
-
         private ICleartalk _cleantalk;
-
-        [SetUp]
-        protected void SetUp()
-        {
-            this._cleantalk = new Cleantalk();
-        }
 
         [Test]
         public void NotSpamMessageTest()
@@ -40,34 +39,28 @@ API sends a comment's text and several previous approved comments to the servers
             var req1 = new CleantalkRequest(AuthKey)
             {
                 Message = "This is great storm!",
-                Example = "Formula 1 organisers are monitoring Tropical Storm Fitow that is passing through parts of Asia ahead of this weekend's Korean Grand Prix.",
-                ResponseLang = "en",
-                SenderInfo = WebHelper.JsonSerialize(new SenderInfo
-                    {
-                        CmsLang = "en",
-                        Refferrer = "http://www.bbc.co.uk/sport",
-                        UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12",
-                        Profile = false
-                    }),
+                SenderInfo = new SenderInfo
+                {
+                    Refferrer = "http://www.bbc.co.uk/sport",
+                    UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12"
+                },
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh.smith@gmail.com",
                 SenderNickname = "Mike",
-                IsAllowLinks = 0,
-                IsEnableJs = 1,
-                SubmitTime = 12,
-                StoplistCheck = 0,
-                TimeZone = 2
+                IsJsEnable = 1,
+                SubmitTime = 12
             };
 
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckMessage(req1);
-
+            Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
-            Assert.IsTrue(res1.IsAllow);
+            Assert.AreEqual(0, res1.IsInactive);
+            Assert.IsTrue(res1.IsAllow.With(x => x.Value));
             Assert.IsNotNullOrEmpty(res1.Comment);
         }
-
-    }
+      }
 
 ```
 
