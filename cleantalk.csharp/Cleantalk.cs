@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Text;
 using cleantalk.csharp.Enums;
@@ -67,11 +67,7 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckMessage(CleantalkRequest request)
         {
-            var postData = WebHelper.JsonSerialize(Preprocessing(request, MethodType.check_message));
-            var response = SendPostData(postData);
-            var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
-
-            return Postprocessing(result);
+            return SendData(request, MethodType.check_message);
         }
 
         /// <summary>
@@ -81,11 +77,7 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckNewUser(CleantalkRequest request)
         {
-            var postData = WebHelper.JsonSerialize(Preprocessing(request, MethodType.check_newuser));
-            var response = SendPostData(postData);
-            var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
-
-            return Postprocessing(result);
+            return SendData(request, MethodType.check_newuser);
         }
 
         /// <summary>
@@ -95,11 +87,7 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse SendFeedback(CleantalkRequest request)
         {
-            var postData = WebHelper.JsonSerialize(Preprocessing(request, MethodType.send_feedback));
-            var response = SendPostData(postData);
-            var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
-
-            return Postprocessing(result);
+            return SendData(request, MethodType.send_feedback);
         }
 
         /// <summary>
@@ -113,7 +101,6 @@ namespace cleantalk.csharp
 
             return response;
         }
-
 
         /// <summary>
         ///     Processing request data before action
@@ -162,21 +149,28 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        ///     Send post data to the web server
+        ///     Send data to the web server
         /// </summary>
-        /// <param name="postData"></param>
         /// <returns></returns>
-        private string SendPostData(string postData)
+        private CleantalkResponse SendData(CleantalkRequest request, MethodType methodType)
         {
             string response;
             using (var webClient = new WebClient())
             {
                 webClient.Encoding = Encoding.UTF8;
                 webClient.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+
+                request.AllHeaders = webClient.Headers.Keys
+                    .Cast<string>()
+                    .Aggregate(string.Empty, (current, key) => current + key + ": " + webClient.Headers[key] + Environment.NewLine);
+
+                var postData = WebHelper.JsonSerialize(Preprocessing(request, methodType));
                 response = webClient.UploadString(ServerUrl, postData);
             }
 
-            return response;
+            var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
+
+            return Postprocessing(result);
         }
     }
 }

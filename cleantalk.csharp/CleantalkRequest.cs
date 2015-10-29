@@ -7,6 +7,13 @@ namespace cleantalk.csharp
     public class CleantalkRequest
     {
         /// <summary>
+        ///     All http request headers
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "all_headers")]
+        public string AllHeaders { get; set; }
+
+        /// <summary>
         ///     User message
         ///     @var string
         /// </summary>
