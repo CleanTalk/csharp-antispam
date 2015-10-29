@@ -28,8 +28,8 @@ namespace cleantalk.csharp.test
                 SubmitTime = 12
             };
 
-            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckMessage(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
@@ -56,8 +56,8 @@ namespace cleantalk.csharp.test
                 SubmitTime = 12
             };
 
-            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckMessage(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);
@@ -89,8 +89,8 @@ namespace cleantalk.csharp.test
                 SubmitTime = 12
             };
 
-            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckMessage(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);

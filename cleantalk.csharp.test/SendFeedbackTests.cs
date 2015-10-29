@@ -28,8 +28,8 @@ namespace cleantalk.csharp.test
                 IsJsEnable = 1,
                 SubmitTime = 12
             };
-            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckMessage(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.AreEqual(0, res1.IsInactive);
@@ -50,8 +50,8 @@ namespace cleantalk.csharp.test
                 IsJsEnable = 1,
                 SubmitTime = 12
             };
-            Debug.WriteLine("req2=" + WebHelper.JsonSerialize(req2));
             var res2 = _cleantalk.CheckMessage(req2);
+            Debug.WriteLine("req2=" + WebHelper.JsonSerialize(req2));
             Debug.WriteLine("res2=" + WebHelper.JsonSerialize(res2));
 
             Assert.AreEqual(0, res2.IsInactive);
@@ -62,9 +62,8 @@ namespace cleantalk.csharp.test
             {
                 Feedback = string.Format("{0}:1;{1}:0;", res1.Id, res2.Id)
             };
-
-            Debug.WriteLine("feedbackReq=" + WebHelper.JsonSerialize(feedbackReq));
             var feedbackResp = _cleantalk.SendFeedback(feedbackReq);
+            Debug.WriteLine("feedbackReq=" + WebHelper.JsonSerialize(feedbackReq));
             Debug.WriteLine("feedbackResp=" + WebHelper.JsonSerialize(feedbackResp));
 
             Assert.IsNotNull(feedbackResp);

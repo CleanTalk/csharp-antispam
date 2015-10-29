@@ -21,8 +21,8 @@ namespace cleantalk.csharp.test
                 IsJsEnable = 1
             };
 
-            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckNewUser(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);
@@ -43,8 +43,8 @@ namespace cleantalk.csharp.test
                 IsJsEnable = 1,
                 SubmitTime = 12
             };
-            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             var res1 = _cleantalk.CheckNewUser(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);

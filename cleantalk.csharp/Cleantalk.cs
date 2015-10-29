@@ -10,6 +10,14 @@ namespace cleantalk.csharp
     [Serializable]
     public class Cleantalk : ICleartalk
     {
+        public Cleantalk()
+        {
+            DebugLevel = 0;
+            ServerChange = false;
+            StayOnServer = false;
+            ServerUrl = Constants.ServerUrl;
+        }
+
         /// <summary>
         ///     Debug level
         ///     @var int
@@ -51,14 +59,6 @@ namespace cleantalk.csharp
         ///     @var bool
         /// </summary>
         public bool StayOnServer { get; set; }
-
-        public Cleantalk()
-        {
-            DebugLevel = 0;
-            ServerChange = false;
-            StayOnServer = false;
-            ServerUrl = Constants.ServerUrl;
-        }
 
         /// <summary>
         ///     Function checks whether it is possible to publish the message
@@ -158,11 +158,21 @@ namespace cleantalk.csharp
             using (var webClient = new WebClient())
             {
                 webClient.Encoding = Encoding.UTF8;
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
+                webClient.Headers[HttpRequestHeader.UserAgent] = @"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0";
+                webClient.Headers[HttpRequestHeader.Accept] = @"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+                webClient.Headers[HttpRequestHeader.AcceptLanguage] = @"ru,en;q=0.5";
+                webClient.Headers[HttpRequestHeader.AcceptEncoding] = @"gzip, deflate";
+                webClient.Headers[HttpRequestHeader.KeepAlive] = @"true";
 
-                request.AllHeaders = webClient.Headers.Keys
+                var allHeaders = webClient.Headers.Keys
                     .Cast<string>()
-                    .Aggregate(string.Empty, (current, key) => current + key + ": " + webClient.Headers[key] + Environment.NewLine);
+                    .Aggregate(
+                        string.Empty,
+                        (current, key) =>
+                            current + @"'" + key + @"':'" + webClient.Headers[key] + @"',")
+                    .TrimEnd(',');
+                request.AllHeaders = "{ " + allHeaders + " }";
 
                 var postData = WebHelper.JsonSerialize(Preprocessing(request, methodType));
                 response = webClient.UploadString(ServerUrl, postData);
