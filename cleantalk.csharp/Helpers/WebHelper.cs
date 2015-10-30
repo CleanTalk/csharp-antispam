@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web;
@@ -66,6 +68,29 @@ namespace cleantalk.csharp.Helpers
 
                 return retVal;
             }
+        }
+
+        /// <summary>
+        /// Serialize web headers to string
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <returns></returns>
+        public static string HeadersSerialize(WebHeaderCollection headers)
+        {
+            if (headers == null || headers.Count == 0)
+            {
+                return null;
+            }
+
+            var allHeaders = headers.Keys
+                   .Cast<string>()
+                   .Aggregate(
+                       string.Empty,
+                       (current, key) =>
+                           current + @"'" + key + @"':'" + headers[key] + @"',")
+                   .TrimEnd(',');
+
+            return "{ " + allHeaders + " }";
         }
     }
 }

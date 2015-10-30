@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
 using cleantalk.csharp.Enums;
 using cleantalk.csharp.Helpers;
 
@@ -10,14 +11,6 @@ namespace cleantalk.csharp
     [Serializable]
     public class Cleantalk : ICleartalk
     {
-        public Cleantalk()
-        {
-            DebugLevel = 0;
-            ServerChange = false;
-            StayOnServer = false;
-            ServerUrl = Constants.ServerUrl;
-        }
-
         /// <summary>
         ///     Debug level
         ///     @var int
@@ -59,6 +52,14 @@ namespace cleantalk.csharp
         ///     @var bool
         /// </summary>
         public bool StayOnServer { get; set; }
+
+        public Cleantalk()
+        {
+            DebugLevel = 0;
+            ServerChange = false;
+            StayOnServer = false;
+            ServerUrl = Constants.ServerUrl;
+        }
 
         /// <summary>
         ///     Function checks whether it is possible to publish the message
@@ -158,21 +159,25 @@ namespace cleantalk.csharp
             using (var webClient = new WebClient())
             {
                 webClient.Encoding = Encoding.UTF8;
-                webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
-                webClient.Headers[HttpRequestHeader.UserAgent] = @"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0";
-                webClient.Headers[HttpRequestHeader.Accept] = @"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-                webClient.Headers[HttpRequestHeader.AcceptLanguage] = @"ru,en;q=0.5";
-                webClient.Headers[HttpRequestHeader.AcceptEncoding] = @"gzip, deflate";
-                webClient.Headers[HttpRequestHeader.KeepAlive] = @"true";
 
-                var allHeaders = webClient.Headers.Keys
-                    .Cast<string>()
-                    .Aggregate(
-                        string.Empty,
-                        (current, key) =>
-                            current + @"'" + key + @"':'" + webClient.Headers[key] + @"',")
-                    .TrimEnd(',');
-                request.AllHeaders = "{ " + allHeaders + " }";
+                //get headers from httpContext
+                var context = HttpContext.Current;
+                if (context != null)
+                {
+                    var restrictedHeaders = new[] { "Content-Length", "Connection" };
+                    var h = context.Request.Headers;
+                    foreach (var v in
+                        h.Keys.Cast<string>()
+                            .Select(x => new { key = x, value = h[x] })
+                            .Where(x => !restrictedHeaders.Contains(x.key)))
+                    {
+                        webClient.Headers.Add(v.key, v.value);
+                    }
+                }
+
+                webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
+
+                request.AllHeaders = WebHelper.HeadersSerialize(webClient.Headers);
 
                 var postData = WebHelper.JsonSerialize(Preprocessing(request, methodType));
                 response = webClient.UploadString(ServerUrl, postData);
