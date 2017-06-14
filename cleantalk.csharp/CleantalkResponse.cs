@@ -13,7 +13,7 @@ namespace cleantalk.csharp
         ///     @var int
         /// </summary>
         [DataMember(Name = "stop_words")]
-        public int? StopWords { get; set; }
+        public string StopWords { get; set; }
 
         /// <summary>
         ///     Cleantalk comment
