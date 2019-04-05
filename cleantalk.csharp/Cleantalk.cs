@@ -164,7 +164,7 @@ namespace cleantalk.csharp
                 var context = HttpContext.Current;
                 if (context != null)
                 {
-                    var restrictedHeaders = new[] { "Content-Length", "Connection" };
+                    var restrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
                     var h = context.Request.Headers;
                     foreach (var v in
                         h.Keys.Cast<string>()
