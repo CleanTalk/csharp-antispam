@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace cleantalk.csharp.Helpers
 {
@@ -38,8 +35,8 @@ namespace cleantalk.csharp.Helpers
         /// <returns></returns>
         public static string ConvertIso88591ToUtf8(string input)
         {
-            return String.IsNullOrWhiteSpace(input)
-                ? String.Empty
+            return string.IsNullOrWhiteSpace(input)
+                ? string.Empty
                 : Encoding.UTF8.GetString(Encoding.GetEncoding("ISO8859-1").GetBytes(input));
         }
     }

@@ -9,7 +9,7 @@ using cleantalk.csharp.Helpers;
 namespace cleantalk.csharp
 {
     [Serializable]
-    public class Cleantalk : ICleartalk
+    public class Cleantalk : ICleantalk
     {
         /// <summary>
         ///     Debug level
@@ -164,12 +164,13 @@ namespace cleantalk.csharp
                 var context = HttpContext.Current;
                 if (context != null)
                 {
-                    var restrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
-                    var h = context.Request.Headers;
-                    foreach (var v in
-                        h.Keys.Cast<string>()
-                            .Select(x => new { key = x, value = h[x] })
-                            .Where(x => !restrictedHeaders.Contains(x.key)))
+                    var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
+                    var headers = context.Request.Headers;
+                    foreach (var v in headers.Keys.Cast<string>()
+                                        .Select(x => new { key = x, value = headers[x] })
+                                        .Where(x => 
+                                            !customRestrictedHeaders.Contains(x.key) &&
+                                            !WebHeaderCollection.IsRestricted(x.key)))
                     {
                         webClient.Headers.Add(v.key, v.value);
                     }

@@ -86,8 +86,7 @@ namespace cleantalk.csharp.Helpers
                    .Cast<string>()
                    .Aggregate(
                        string.Empty,
-                       (current, key) =>
-                           current + @"'" + key + @"':'" + headers[key] + @"',")
+                       (current, key) => current + @"'" + key + @"':'" + headers[key] + @"',")
                    .TrimEnd(',');
 
             return "{ " + allHeaders + " }";

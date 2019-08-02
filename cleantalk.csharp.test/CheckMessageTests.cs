@@ -8,7 +8,7 @@ namespace cleantalk.csharp.test
     [TestFixture]
     public class CheckMessageTests
     {
-        private ICleartalk _cleantalk;
+        private ICleantalk _cleantalk;
 
         [Test]
         public void NotSpamMessageTest()
@@ -22,7 +22,7 @@ namespace cleantalk.csharp.test
                     UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12"
                 },
                 SenderIp = "91.207.4.192",
-                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
                 IsJsEnable = 1,
                 SubmitTime = 12

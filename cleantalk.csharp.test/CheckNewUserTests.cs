@@ -8,7 +8,7 @@ namespace cleantalk.csharp.test
     [TestFixture]
     public class CheckNewUserTests
     {
-        private ICleartalk _cleantalk;
+        private ICleantalk _cleantalk;
 
         [Test]
         public void CheckNewSpamUserTest()
@@ -38,7 +38,7 @@ namespace cleantalk.csharp.test
             var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
                 SenderIp = "91.207.4.192",
-                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
                 IsJsEnable = 1,
                 SubmitTime = 12
