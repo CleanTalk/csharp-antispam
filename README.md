@@ -4,8 +4,8 @@ csharp-antispam
 CleanTalk service API for C#. It is invisible protection from spam, no captches, no puzzles, no animals and no math.
 
 ## Actual API documentation
-  * [check_message](https://cleantalk.org/wiki/doku.php?id=check_message) - Check IPs, Emails and messages for spam activity
-  * [check_newuser](https://cleantalk.org/wiki/doku.php?id=check_newuser) - Check registrations of new users
+  * [check_message](https://cleantalk.org/help/api-check-message) - Check IPs, Emails and messages for spam activity
+  * [check_newuser](https://cleantalk.org/help/api-check-newuser) - Check registrations of new users
 
 ## How does API stop spam?
 API uses several simple tests to stop spammers.
@@ -31,7 +31,7 @@ API sends a comment's text and several previous approved comments to the servers
     [TestFixture]
     public class CheckMessageTests
     {
-        private ICleartalk _cleantalk;
+        private ICleantalk _cleantalk;
 
         [Test]
         public void NotSpamMessageTest()
@@ -45,10 +45,10 @@ API sends a comment's text and several previous approved comments to the servers
                     UserAgent = "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12"
                 },
                 SenderIp = "91.207.4.192",
-                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
                 IsJsEnable = 1,
-                SubmitTime = 12
+                SubmitTime = 15
             };
 
             Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
@@ -57,7 +57,7 @@ API sends a comment's text and several previous approved comments to the servers
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
             Assert.AreEqual(0, res1.IsInactive);
-            Assert.IsTrue(res1.IsAllow.With(x => x.Value));
+            Assert.IsTrue(res1.IsAllow.GetValueOrDefault());
             Assert.IsNotNullOrEmpty(res1.Comment);
         }
       }
