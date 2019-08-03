@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Monads;
 using cleantalk.csharp.Helpers;
 using NUnit.Framework;
 
@@ -62,7 +61,7 @@ namespace cleantalk.csharp.test
 
             Assert.IsNotNull(feedbackResp);
             Assert.IsNotNullOrEmpty(feedbackResp.Comment);
-            Assert.IsTrue(feedbackResp.Received.With(x => x.Value));
+            Assert.IsTrue(feedbackResp.Received.GetValueOrDefault());
         }
 
         [SetUp]

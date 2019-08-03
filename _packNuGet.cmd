@@ -1,1 +1,1 @@
-%Systemroot%\Microsoft.NET\Framework\v4.0.30319\MSBuild build.proj /target:PackNuGet /fileLogger %*
+_msbuild.cmd build.proj /target:PackNuGet /fileLogger %*

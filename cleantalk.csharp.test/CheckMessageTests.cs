@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Monads;
 using cleantalk.csharp.Helpers;
 using NUnit.Framework;
 
@@ -34,7 +33,7 @@ namespace cleantalk.csharp.test
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
             Assert.AreEqual(0, res1.IsInactive);
-            Assert.IsTrue(res1.IsAllow.With(x => x.Value));
+            Assert.IsTrue(res1.IsAllow.GetValueOrDefault());
             Assert.IsNotNullOrEmpty(res1.Comment);
         }
 
@@ -63,7 +62,7 @@ namespace cleantalk.csharp.test
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
             Assert.AreEqual(0, res1.IsInactive);
-            Assert.IsFalse(res1.IsAllow.With(x => x.Value));
+            Assert.IsFalse(res1.IsAllow.GetValueOrDefault());
             Assert.IsNotNullOrEmpty(res1.Comment);
         }
 
@@ -96,8 +95,8 @@ namespace cleantalk.csharp.test
             Assert.IsNotNull(res1);
             Assert.IsNotNullOrEmpty(res1.Id);
             Assert.AreEqual(0, res1.IsInactive);
-            Assert.IsFalse(res1.IsAllow.With(x => x.Value));
-            Assert.IsTrue(res1.IsSpam.With(x => x.Value));
+            Assert.IsFalse(res1.IsAllow.GetValueOrDefault());
+            Assert.IsTrue(res1.IsSpam.GetValueOrDefault());
             Assert.IsNotNullOrEmpty(res1.Comment);
         }
 
