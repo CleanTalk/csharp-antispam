@@ -24,7 +24,7 @@ namespace cleantalk.csharp.test
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
                 IsJsEnable = 1,
-                SubmitTime = 12
+                SubmitTime = 15
             };
 
             var res1 = _cleantalk.CheckMessage(req1);
@@ -52,7 +52,7 @@ namespace cleantalk.csharp.test
                 SenderEmail = "stop_email@example.com",
                 SenderNickname = "Hacker",
                 IsJsEnable = 1,
-                SubmitTime = 12
+                SubmitTime = 15
             };
 
             var res1 = _cleantalk.CheckMessage(req1);
@@ -82,10 +82,10 @@ namespace cleantalk.csharp.test
                     CommentType = "feedback"
                 },
                 SenderIp = "91.207.4.192",
-                SenderEmail = "keanu8dh.smith@gmail.com",
+                SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
                 IsJsEnable = 1,
-                SubmitTime = 12
+                SubmitTime = 15
             };
 
             var res1 = _cleantalk.CheckMessage(req1);

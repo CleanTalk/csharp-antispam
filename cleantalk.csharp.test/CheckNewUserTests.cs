@@ -40,7 +40,7 @@ namespace cleantalk.csharp.test
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
                 IsJsEnable = 1,
-                SubmitTime = 12
+                SubmitTime = 15
             };
             var res1 = _cleantalk.CheckNewUser(req1);
             Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
