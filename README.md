@@ -21,6 +21,7 @@ API sends the comment's text and several previous approved comments to the serve
 ## Requirements
 
    * [.Net Framework 4.5](https://dot.net)
+   * CleanTalk account https://cleantalk.org/register?product=anti-spam
 
 ## SPAM test for text comment sample
 
