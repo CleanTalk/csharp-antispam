@@ -12,7 +12,7 @@ namespace cleantalk.csharp.test
         [Test]
         public void SendFeedbackTest()
         {
-            //send message1
+            //send message1 to collect request_id
             var req1 = new CleantalkRequest(TestConstants.AuthKey)
             {
                 Message = "bla-bla-bla oh",
@@ -24,14 +24,15 @@ namespace cleantalk.csharp.test
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
-                IsJsEnable = 1,
+                //IsJsEnable = 1, redundant if use event_token
+                EventToken = "f32f32f32f32f32f32f32f32f32f32a2",
                 SubmitTime = 15
             };
             var res1 = _cleantalk.CheckMessage(req1);
             Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
-            //send message2
+            //send message2 to collect request_id
             var req2 = new CleantalkRequest(TestConstants.AuthKey)
             {
                 Message = "This is great storm!!!",
@@ -43,7 +44,8 @@ namespace cleantalk.csharp.test
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
-                IsJsEnable = 1,
+                //IsJsEnable = 1, redundant if use event_token
+                EventToken = "f32f32f32f32f32f32f32f32f32f32a2",
                 SubmitTime = 15
             };
             var res2 = _cleantalk.CheckMessage(req2);

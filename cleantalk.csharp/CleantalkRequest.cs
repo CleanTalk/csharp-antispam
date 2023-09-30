@@ -49,6 +49,16 @@ namespace cleantalk.csharp
         public string SenderNickname { get; set; }
 
         /// <summary>
+        ///     CleanTalk bot detector event token.
+        ///     To get this param:
+        ///         1. add a script to the web-page: <script src="https://moderate.cleantalk.org/ct-bot-detector-wrapper.js" id="ct_bot_detector-js"></script>
+        ///         2. parse the newly added hidden input on the web form, the name atrribute of input is "ct_bot_detector_event_token" 
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "event_token")]
+        public string EventToken { get; set; }
+
+        /// <summary>
         ///     Sender info JSON string
         ///     @var string
         /// </summary>

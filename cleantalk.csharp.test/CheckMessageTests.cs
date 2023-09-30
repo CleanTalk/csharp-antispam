@@ -23,7 +23,8 @@ namespace cleantalk.csharp.test
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
-                IsJsEnable = 1,
+                //IsJsEnable = 1, redundant if use event_token
+                EventToken = "f32f32f32f32f32f32f32f32f32f32a2",
                 SubmitTime = 15
             };
 
@@ -51,7 +52,8 @@ namespace cleantalk.csharp.test
                 SenderIp = "91.207.4.192",
                 SenderEmail = "stop_email@example.com",
                 SenderNickname = "Hacker",
-                IsJsEnable = 1,
+                //IsJsEnable = 1, redundant if use event_token
+                EventToken = "f32f32f32f32f32f32f32f32f32f32a2",
                 SubmitTime = 15
             };
 
@@ -84,7 +86,8 @@ namespace cleantalk.csharp.test
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
-                IsJsEnable = 1,
+                //IsJsEnable = 1, redundant if use event_token
+                EventToken = "f32f32f32f32f32f32f32f32f32f32a2",
                 SubmitTime = 15
             };
 
