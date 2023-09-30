@@ -48,7 +48,12 @@ API sends the comment's text and several previous approved comments to the serve
                 SenderIp = "91.207.4.192",
                 SenderEmail = "keanu8dh@gmail.com",
                 SenderNickname = "Mike",
-                IsJsEnable = 1,
+                //IsJsEnable = 1, redundant if use event_token
+                EventToken = "f32f32f32f32f32f32f32f32f32f32a2",
+                ///     To get this param:
+                ///         1. add a script to the web-page: <script src="https://moderate.cleantalk.org/ct-bot-detector-wrapper.js" id="ct_bot_detector-js"></script>
+                ///         2. parse the newly added hidden input on the web form, the name atrribute of input is "ct_bot_detector_event_token" 
+                ///     @var string
                 SubmitTime = 15
             };
 
