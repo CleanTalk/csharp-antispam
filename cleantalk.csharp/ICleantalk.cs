@@ -22,5 +22,14 @@
         ///     @return type
         /// </summary>
         CleantalkResponse SendFeedback(CleantalkRequest request);
+
+        /// <summary>
+        /// This method should be used for bulk checks of IP, Email for spam activity.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        CleantalkResponse SpamCheck(CleantalkRequest request);
+
+        //ip_info
     }
 }
