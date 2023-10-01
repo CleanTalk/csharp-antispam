@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckMessageTests.cs" />
+    <Compile Include="SpamCheckTests.cs" />
     <Compile Include="CheckNewUserTests.cs" />
     <Compile Include="TestConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
