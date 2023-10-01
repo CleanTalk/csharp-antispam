@@ -12,7 +12,7 @@
         <MvcBuildViews>true</MvcBuildViews>
         <ManualBuild>true</ManualBuild>
 
-        <NUnitUtilityPath>$(SolutionDir)\packages\NUnit.Runners.2.6.4\tools\nunit-console.exe</NUnitUtilityPath>
+        <NUnitUtilityPath>$(SolutionDir)\packages\NUnit.Console.3.0.1\tools\nunit3-console.exe</NUnitUtilityPath>
         <NugetPath>$(SolutionDir)NuGet.exe</NugetPath>
     </PropertyGroup>
 
