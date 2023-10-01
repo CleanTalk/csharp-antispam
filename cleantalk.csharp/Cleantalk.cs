@@ -30,7 +30,7 @@ namespace cleantalk.csharp
         public string WorkUrl { get; set; }
 
         /// <summary>
-        ///     WOrk url ttl
+        ///     Work url ttl
         ///     @var int
         /// </summary>
         public int ServerTtl { get; set; }
@@ -187,6 +187,11 @@ namespace cleantalk.csharp
             var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
 
             return Postprocessing(result);
+        }
+
+        public CleantalkResponse SpamCheck(CleantalkRequest request)
+        {
+            return SendData(request, MethodType.spam_check);
         }
     }
 }
