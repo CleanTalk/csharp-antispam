@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿// ReSharper disable InconsistentNaming
+
+using System.Runtime.Serialization;
 
 namespace cleantalk.csharp
 {
