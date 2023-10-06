@@ -107,7 +107,7 @@ namespace cleantalk.csharp
 
         /// <summary>
         ///     Feedback string,
-        ///     valid are 'requset_id:(1|0)'
+        ///     valid are 'request_id:(1|0)'
         ///     @var string
         /// </summary>
         [DataMember(Name = "feedback")]
