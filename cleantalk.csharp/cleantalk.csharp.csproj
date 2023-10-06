@@ -70,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PostInfo.cs" />
     <Compile Include="SenderInfo.cs" />
+    <Compile Include="SpamCheckResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

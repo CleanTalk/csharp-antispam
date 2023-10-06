@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReSharper disable InconsistentNaming
+
+using System;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -140,6 +142,9 @@ namespace cleantalk.csharp
                     }
 
                     break;
+                case MethodType.spam_check:
+                    //TODO: 
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("methodType", methodType, null);
             }
@@ -189,9 +194,20 @@ namespace cleantalk.csharp
             return Postprocessing(result);
         }
 
-        public CleantalkResponse SpamCheck(CleantalkRequest request)
+        /// <summary>
+        /// This <see href="https://cleantalk.org/help/api-spam-check">method</see> should be used for bulk checks of IP, Email for spam activity.
+        /// </summary>
+        /// <param name="ip">IP address to check (IPv4 or IPv6 standard format)</param>
+        /// <param name="email">e-mail address to check (The result is given for the last 6 months)</param>
+        /// <param name="date">date to check for statistics in YYYY-MM-DD format (It can be applied only to IP addresses)</param>
+        /// <param name="email_SHA256">email SHA256 hash</param>
+        /// <param name="ip4_SHA256">IPv4 address SHA256 hash</param>
+        /// <param name="ip6_SHA256">IPv6 address SHA256 hash</param>
+        /// <returns></returns>
+        public SpamCheckResponse SpamCheck(string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256)
         {
-            return SendData(request, MethodType.spam_check);
+            //MethodType.spam_check
+            return new SpamCheckResponse();
         }
     }
 }
