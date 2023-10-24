@@ -184,10 +184,10 @@ namespace cleantalk.csharp
                 query["auth_key"] = request.AuthKey;
                 query["ip"] = request.ip;
                 query["email"] = request.email; 
-                //query["ip4_SHA256"] = request.ip4_SHA256;
-                //query["ip6_SHA256"] = request.ip6_SHA256;
-                //query["date"] = request.date;
-                //query["email_SHA256"] = request.email_SHA256;
+                query["ip4_SHA256"] = request.ip4_SHA256;
+                query["ip6_SHA256"] = request.ip6_SHA256;
+                query["date"] = request.date;
+                query["email_SHA256"] = request.email_SHA256;
 
                 uriBuilder.Query = query.ToString();
 
