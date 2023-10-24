@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using cleantalk.csharp.Helpers;
+using cleantalk.csharp.Request;
 using NUnit.Framework;
 
 namespace cleantalk.csharp.test

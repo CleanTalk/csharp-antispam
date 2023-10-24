@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace cleantalk.csharp
+namespace cleantalk.csharp.Response
 {
     public class SpamCheckResponse
     {

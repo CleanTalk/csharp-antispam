@@ -1,12 +1,18 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
 using System.Text;
 using System.Web;
 using cleantalk.csharp.Enums;
 using cleantalk.csharp.Helpers;
+using cleantalk.csharp.Request;
+using cleantalk.csharp.Response;
 
 namespace cleantalk.csharp
 {
@@ -55,12 +61,12 @@ namespace cleantalk.csharp
         /// </summary>
         public bool StayOnServer { get; set; }
 
-        public Cleantalk()
+        public Cleantalk(string serverUrl = Constants.ServerUrl)
         {
             DebugLevel = 0;
             ServerChange = false;
             StayOnServer = false;
-            ServerUrl = Constants.ServerUrl;
+            ServerUrl = serverUrl;
         }
 
         /// <summary>
@@ -70,7 +76,10 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckMessage(CleantalkRequest request)
         {
-            return SendData(request, MethodType.check_message);
+            var result = SendData<CleantalkResponse>(request, MethodType.check_message);
+            result.ConvertProperties();
+
+            return result;
         }
 
         /// <summary>
@@ -80,7 +89,10 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckNewUser(CleantalkRequest request)
         {
-            return SendData(request, MethodType.check_newuser);
+            var result = SendData<CleantalkResponse>(request, MethodType.check_newuser);
+            result.ConvertProperties();
+
+            return result;
         }
 
         /// <summary>
@@ -90,76 +102,20 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse SendFeedback(CleantalkRequest request)
         {
-            return SendData(request, MethodType.send_feedback);
-        }
+            var result =  SendData<CleantalkResponse>(request, MethodType.send_feedback);
+            result.ConvertProperties();
 
-        /// <summary>
-        ///     Processing response data after action
-        /// </summary>
-        /// <returns></returns>
-        private static CleantalkResponse Postprocessing(CleantalkResponse response)
-        {
-            response.Comment = ConvertHelper.ConvertIso88591ToUtf8(response.Comment);
-            response.ErrStr = ConvertHelper.ConvertIso88591ToUtf8(response.ErrStr);
-
-            return response;
-        }
-
-        /// <summary>
-        ///     Processing request data before action
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="methodType"></param>
-        /// <returns></returns>
-        private static CleantalkRequest Preprocessing(CleantalkRequest request, MethodType methodType)
-        {
-            if (string.IsNullOrWhiteSpace(request.AuthKey))
-            {
-                throw new ArgumentNullException("AuthKey is empty");
-            }
-
-            switch (methodType)
-            {
-                case MethodType.check_message:
-                    //nothing to do
-                    break;
-                case MethodType.check_newuser:
-                    if (string.IsNullOrWhiteSpace(request.SenderNickname))
-                    {
-                        throw new ArgumentNullException("SenderNickname is empty");
-                    }
-
-                    if (string.IsNullOrWhiteSpace(request.SenderEmail))
-                    {
-                        throw new ArgumentNullException("SenderEmail is empty");
-                    }
-
-                    break;
-                case MethodType.send_feedback:
-                    if (string.IsNullOrWhiteSpace(request.Feedback))
-                    {
-                        throw new ArgumentNullException("Feedback is empty");
-                    }
-
-                    break;
-                case MethodType.spam_check:
-                    //TODO: 
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("methodType", methodType, null);
-            }
-
-            request.MethodName = methodType.ToString();
-
-            return request;
+            return result;
         }
 
         /// <summary>
         ///     Send data to the web server
         /// </summary>
         /// <returns></returns>
-        private CleantalkResponse SendData(CleantalkRequest request, MethodType methodType)
+        private TResponse SendData<TResponse>(CleantalkRequestBase request, MethodType methodType)
         {
+            var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
+
             string response;
             using (var webClient = new WebClient())
             {
@@ -169,45 +125,95 @@ namespace cleantalk.csharp
                 var context = HttpContext.Current;
                 if (context != null)
                 {
-                    var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
                     var headers = context.Request.Headers;
-                    foreach (var v in headers.Keys.Cast<string>()
+                    foreach (var kvp in headers.Keys.Cast<string>()
                                         .Select(x => new { key = x, value = headers[x] })
-                                        .Where(x => 
+                                        .Where(x =>
                                             !customRestrictedHeaders.Contains(x.key) &&
                                             !WebHeaderCollection.IsRestricted(x.key)))
                     {
-                        webClient.Headers.Add(v.key, v.value);
+                        webClient.Headers.Add(kvp.key, kvp.value);
                     }
                 }
 
                 webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
 
                 request.AllHeaders = WebHelper.HeadersSerialize(webClient.Headers);
+                request.ValidateAndInit(methodType);
 
-                var postData = WebHelper.JsonSerialize(Preprocessing(request, methodType));
+                var postData = WebHelper.JsonSerialize(request);
                 response = webClient.UploadString(ServerUrl, postData);
             }
 
-            var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
+            return WebHelper.JsonDeserialize<TResponse>(response);
+        }
 
-            return Postprocessing(result);
+        /// <summary>
+        ///     Send data to the web server
+        /// </summary>
+        /// <returns></returns>
+        private SpamCheckResponse SendData(SpamCheckRequest request)
+        {
+            var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
+
+            string response;
+            using (var webClient = new WebClient())
+            {
+                webClient.Encoding = Encoding.UTF8;
+
+                //get headers from httpContext
+                var context = HttpContext.Current;
+                if (context != null)
+                {
+                    var headers = context.Request.Headers;
+                    foreach (var kvp in headers.Keys.Cast<string>()
+                                 .Select(x => new { key = x, value = headers[x] })
+                                 .Where(x =>
+                                     !customRestrictedHeaders.Contains(x.key) &&
+                                     !WebHeaderCollection.IsRestricted(x.key)))
+                    {
+                        webClient.Headers.Add(kvp.key, kvp.value);
+                    }
+                }
+
+                webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
+
+                var uriBuilder = new UriBuilder(ServerUrl);
+                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["method_name"] = MethodType.spam_check.ToString();
+                query["auth_key"] = request.AuthKey;
+                query["ip"] = request.ip;
+                query["email"] = request.email; 
+                //query["ip4_SHA256"] = request.ip4_SHA256;
+                //query["ip6_SHA256"] = request.ip6_SHA256;
+                //query["date"] = request.date;
+                //query["email_SHA256"] = request.email_SHA256;
+
+                uriBuilder.Query = query.ToString();
+
+                //var postData = WebHelper.JsonSerialize(request);
+                response = webClient.DownloadString(uriBuilder.Uri);
+                //using (var stream = webClient.OpenRead(uriBuilder.Uri))
+                //{
+                //    var reader = new StreamReader(stream);
+                //    response = reader.ReadToEnd();
+                //}
+
+            }
+
+            return WebHelper.JsonDeserialize<SpamCheckResponse>(response);
         }
 
         /// <summary>
         /// This <see href="https://cleantalk.org/help/api-spam-check">method</see> should be used for bulk checks of IP, Email for spam activity.
         /// </summary>
-        /// <param name="ip">IP address to check (IPv4 or IPv6 standard format)</param>
-        /// <param name="email">e-mail address to check (The result is given for the last 6 months)</param>
-        /// <param name="date">date to check for statistics in YYYY-MM-DD format (It can be applied only to IP addresses)</param>
-        /// <param name="email_SHA256">email SHA256 hash</param>
-        /// <param name="ip4_SHA256">IPv4 address SHA256 hash</param>
-        /// <param name="ip6_SHA256">IPv6 address SHA256 hash</param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public SpamCheckResponse SpamCheck(string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256)
+        public SpamCheckResponse SpamCheck(SpamCheckRequest request)
         {
-            //MethodType.spam_check
-            return new SpamCheckResponse();
+            var result = SendData(request);
+
+            return result;
         }
     }
 }
