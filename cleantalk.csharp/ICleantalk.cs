@@ -1,5 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
 
+using cleantalk.csharp.Request;
+using cleantalk.csharp.Response;
+
 namespace cleantalk.csharp
 {
     public interface ICleantalk
@@ -28,14 +31,9 @@ namespace cleantalk.csharp
         /// <summary>
         /// This method should be used for bulk checks of IP, Email for spam activity.
         /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="email"></param>
-        /// <param name="date"></param>
-        /// <param name="email_SHA256"></param>
-        /// <param name="ip4_SHA256"></param>
-        /// <param name="ip6_SHA256"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        SpamCheckResponse SpamCheck(string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256);
+        SpamCheckResponse SpamCheck(SpamCheckRequest request);
 
         //TODO: method ip_info
     }
