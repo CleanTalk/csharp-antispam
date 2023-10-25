@@ -1,12 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
 using System.Text;
 using System.Web;
 using cleantalk.csharp.Enums;
@@ -19,6 +15,14 @@ namespace cleantalk.csharp
     [Serializable]
     public class Cleantalk : ICleantalk
     {
+        public Cleantalk(string serverUrl = Constants.ServerUrl)
+        {
+            DebugLevel = 0;
+            ServerChange = false;
+            StayOnServer = false;
+            ServerUrl = serverUrl;
+        }
+
         /// <summary>
         ///     Debug level
         ///     @var int
@@ -61,14 +65,6 @@ namespace cleantalk.csharp
         /// </summary>
         public bool StayOnServer { get; set; }
 
-        public Cleantalk(string serverUrl = Constants.ServerUrl)
-        {
-            DebugLevel = 0;
-            ServerChange = false;
-            StayOnServer = false;
-            ServerUrl = serverUrl;
-        }
-
         /// <summary>
         ///     Function checks whether it is possible to publish the message
         /// </summary>
@@ -76,8 +72,7 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckMessage(CleantalkRequest request)
         {
-            var result = SendData<CleantalkResponse>(request, MethodType.check_message);
-            result.ConvertProperties();
+            var result = SendData(request, MethodType.check_message);
 
             return result;
         }
@@ -89,8 +84,7 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse CheckNewUser(CleantalkRequest request)
         {
-            var result = SendData<CleantalkResponse>(request, MethodType.check_newuser);
-            result.ConvertProperties();
+            var result = SendData(request, MethodType.check_newuser);
 
             return result;
         }
@@ -102,8 +96,20 @@ namespace cleantalk.csharp
         /// <returns></returns>
         public CleantalkResponse SendFeedback(CleantalkRequest request)
         {
-            var result =  SendData<CleantalkResponse>(request, MethodType.send_feedback);
-            result.ConvertProperties();
+            var result = SendData(request, MethodType.send_feedback);
+
+            return result;
+        }
+
+        /// <summary>
+        ///     This <see href="https://cleantalk.org/help/api-spam-check">method</see> should be used for bulk checks of IP, Email
+        ///     for spam activity.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public SpamCheckResponse SpamCheck(SpamCheckRequest request)
+        {
+            var result = SendData(request);
 
             return result;
         }
@@ -112,7 +118,7 @@ namespace cleantalk.csharp
         ///     Send data to the web server
         /// </summary>
         /// <returns></returns>
-        private TResponse SendData<TResponse>(CleantalkRequestBase request, MethodType methodType)
+        private CleantalkResponse SendData(CleantalkRequest request, MethodType methodType)
         {
             var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
 
@@ -127,13 +133,11 @@ namespace cleantalk.csharp
                 {
                     var headers = context.Request.Headers;
                     foreach (var kvp in headers.Keys.Cast<string>()
-                                        .Select(x => new { key = x, value = headers[x] })
-                                        .Where(x =>
-                                            !customRestrictedHeaders.Contains(x.key) &&
-                                            !WebHeaderCollection.IsRestricted(x.key)))
-                    {
+                                 .Select(x => new { key = x, value = headers[x] })
+                                 .Where(x =>
+                                     !customRestrictedHeaders.Contains(x.key) &&
+                                     !WebHeaderCollection.IsRestricted(x.key)))
                         webClient.Headers.Add(kvp.key, kvp.value);
-                    }
                 }
 
                 webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
@@ -145,7 +149,10 @@ namespace cleantalk.csharp
                 response = webClient.UploadString(ServerUrl, postData);
             }
 
-            return WebHelper.JsonDeserialize<TResponse>(response);
+            var result = WebHelper.JsonDeserialize<CleantalkResponse>(response);
+            result.ConvertProperties();
+
+            return result;
         }
 
         /// <summary>
@@ -171,9 +178,7 @@ namespace cleantalk.csharp
                                  .Where(x =>
                                      !customRestrictedHeaders.Contains(x.key) &&
                                      !WebHeaderCollection.IsRestricted(x.key)))
-                    {
                         webClient.Headers.Add(kvp.key, kvp.value);
-                    }
                 }
 
                 webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
@@ -181,37 +186,20 @@ namespace cleantalk.csharp
                 var uriBuilder = new UriBuilder(ServerUrl);
                 var query = HttpUtility.ParseQueryString(uriBuilder.Query);
                 query["method_name"] = MethodType.spam_check.ToString();
-                query["auth_key"] = request.AuthKey;
-                query["ip"] = request.ip;
-                query["email"] = request.email; 
-                query["ip4_SHA256"] = request.ip4_SHA256;
-                query["ip6_SHA256"] = request.ip6_SHA256;
-                query["date"] = request.date;
-                query["email_SHA256"] = request.email_SHA256;
+                request.AuthKey.Do(x => query["auth_key"] = x);
+                request.ip.Do(x => query["ip"] = x);
+                request.email.Do(x => query["email"] = x);
+                request.ip4_SHA256.Do(x => query["ip4_SHA256"] = x);
+                request.ip6_SHA256.Do(x => query["ip6_SHA256"] = x);
+                request.date.Do(x => query["date"] = x);
+                request.email_SHA256.Do(x => query["email_SHA256"] = x);
 
                 uriBuilder.Query = query.ToString();
 
-                //var postData = WebHelper.JsonSerialize(request);
                 response = webClient.DownloadString(uriBuilder.Uri);
-                //using (var stream = webClient.OpenRead(uriBuilder.Uri))
-                //{
-                //    var reader = new StreamReader(stream);
-                //    response = reader.ReadToEnd();
-                //}
-
             }
 
-            return WebHelper.JsonDeserialize<SpamCheckResponse>(response);
-        }
-
-        /// <summary>
-        /// This <see href="https://cleantalk.org/help/api-spam-check">method</see> should be used for bulk checks of IP, Email for spam activity.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public SpamCheckResponse SpamCheck(SpamCheckRequest request)
-        {
-            var result = SendData(request);
+            var result = WebHelper.JsonDeserialize<SpamCheckResponse>(response);
 
             return result;
         }

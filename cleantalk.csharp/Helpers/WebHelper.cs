@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web;
@@ -37,17 +37,19 @@ namespace cleantalk.csharp.Helpers
         /// <returns></returns>
         public static T JsonDeserialize<T>(string json)
         {
-            if (json == null) return default(T);
+            if (json == null) return default;
 
-            var obj = Activator.CreateInstance<T>();
             var decodedStr = HttpUtility.HtmlDecode(json);
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(decodedStr)))
             {
-                var serializer = new DataContractJsonSerializer(obj.GetType());
-                obj = (T)serializer.ReadObject(ms);
+                var settings = new DataContractJsonSerializerSettings
+                {
+                    UseSimpleDictionaryFormat = true,
+                    DateTimeFormat = new DateTimeFormat("yyyy-MM-dd HH:mm:ss")
+                };
+                var serializer = new DataContractJsonSerializer(typeof(T), settings);
+                return (T)serializer.ReadObject(ms);
             }
-
-            return obj;
         }
 
         /// <summary>
@@ -60,7 +62,12 @@ namespace cleantalk.csharp.Helpers
         {
             if (obj == null) return null;
 
-            var serializer = new DataContractJsonSerializer(obj.GetType());
+            var settings = new DataContractJsonSerializerSettings
+            {
+                UseSimpleDictionaryFormat = true,
+                DateTimeFormat = new DateTimeFormat("yyyy-MM-dd HH:mm:ss")
+            };
+            var serializer = new DataContractJsonSerializer(obj.GetType(), settings);
             using (var ms = new MemoryStream())
             {
                 serializer.WriteObject(ms, obj);
@@ -71,23 +78,20 @@ namespace cleantalk.csharp.Helpers
         }
 
         /// <summary>
-        /// Serialize web headers to string
+        ///     Serialize web headers to string
         /// </summary>
         /// <param name="headers"></param>
         /// <returns></returns>
         public static string HeadersSerialize(WebHeaderCollection headers)
         {
-            if (headers == null || headers.Count == 0)
-            {
-                return null;
-            }
+            if (headers == null || headers.Count == 0) return null;
 
             var allHeaders = headers.Keys
-                   .Cast<string>()
-                   .Aggregate(
-                       string.Empty,
-                       (current, key) => current + @"'" + key + @"':'" + headers[key] + @"',")
-                   .TrimEnd(',');
+                .Cast<string>()
+                .Aggregate(
+                    string.Empty,
+                    (current, key) => current + @"'" + key + @"':'" + headers[key] + @"',")
+                .TrimEnd(',');
 
             return "{ " + allHeaders + " }";
         }
