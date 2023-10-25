@@ -15,12 +15,12 @@
 		<projectUrl>https://cleantalk.org</projectUrl>
 		<iconUrl>https://cleantalk.org/images/icons/icon-32x32.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<copyright>Copyright © 2015</copyright>
+		<copyright>Copyright © 2024</copyright>
 		<dependencies/>
 		<references></references>
 		<tags>CleanTalk Antispam spam</tags>
 	</metadata>
 	<files>
-		<file src="Build\cleantalk.csharp.dll" target="lib/net45"/>
+		<file src="Build\cleantalk.csharp.dll" target="lib/net48"/>
 	</files>
 </package>

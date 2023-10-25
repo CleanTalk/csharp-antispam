@@ -73,7 +73,6 @@ namespace cleantalk.csharp
         public CleantalkResponse CheckMessage(CleantalkRequest request)
         {
             var result = SendData(request, MethodType.check_message);
-
             return result;
         }
 
@@ -85,7 +84,6 @@ namespace cleantalk.csharp
         public CleantalkResponse CheckNewUser(CleantalkRequest request)
         {
             var result = SendData(request, MethodType.check_newuser);
-
             return result;
         }
 
@@ -97,7 +95,6 @@ namespace cleantalk.csharp
         public CleantalkResponse SendFeedback(CleantalkRequest request)
         {
             var result = SendData(request, MethodType.send_feedback);
-
             return result;
         }
 
@@ -110,7 +107,6 @@ namespace cleantalk.csharp
         public SpamCheckResponse SpamCheck(SpamCheckRequest request)
         {
             var result = SendData(request);
-
             return result;
         }
 
@@ -120,30 +116,15 @@ namespace cleantalk.csharp
         /// <returns></returns>
         private CleantalkResponse SendData(CleantalkRequest request, MethodType methodType)
         {
-            var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
-
             string response;
             using (var webClient = new WebClient())
             {
                 webClient.Encoding = Encoding.UTF8;
-
-                //get headers from httpContext
-                var context = HttpContext.Current;
-                if (context != null)
-                {
-                    var headers = context.Request.Headers;
-                    foreach (var kvp in headers.Keys.Cast<string>()
-                                 .Select(x => new { key = x, value = headers[x] })
-                                 .Where(x =>
-                                     !customRestrictedHeaders.Contains(x.key) &&
-                                     !WebHeaderCollection.IsRestricted(x.key)))
-                        webClient.Headers.Add(kvp.key, kvp.value);
-                }
-
-                webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
+                SetWebHeaders(webClient);
 
                 request.AllHeaders = WebHelper.HeadersSerialize(webClient.Headers);
-                request.ValidateAndInit(methodType);
+                request.MethodName = methodType.ToString();
+                request.Validate();
 
                 var postData = WebHelper.JsonSerialize(request);
                 response = webClient.UploadString(ServerUrl, postData);
@@ -156,34 +137,19 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        ///     Send data to the web server
+        ///     Send data to the web server for spam_check method
         /// </summary>
         /// <returns></returns>
         private SpamCheckResponse SendData(SpamCheckRequest request)
         {
-            var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
-
             string response;
             using (var webClient = new WebClient())
             {
                 webClient.Encoding = Encoding.UTF8;
-
-                //get headers from httpContext
-                var context = HttpContext.Current;
-                if (context != null)
-                {
-                    var headers = context.Request.Headers;
-                    foreach (var kvp in headers.Keys.Cast<string>()
-                                 .Select(x => new { key = x, value = headers[x] })
-                                 .Where(x =>
-                                     !customRestrictedHeaders.Contains(x.key) &&
-                                     !WebHeaderCollection.IsRestricted(x.key)))
-                        webClient.Headers.Add(kvp.key, kvp.value);
-                }
-
-                webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
+                SetWebHeaders(webClient);
 
                 var uriBuilder = new UriBuilder(ServerUrl);
+
                 var query = HttpUtility.ParseQueryString(uriBuilder.Query);
                 query["method_name"] = MethodType.spam_check.ToString();
                 request.AuthKey.Do(x => query["auth_key"] = x);
@@ -193,15 +159,35 @@ namespace cleantalk.csharp
                 request.ip6_SHA256.Do(x => query["ip6_SHA256"] = x);
                 request.date.Do(x => query["date"] = x);
                 request.email_SHA256.Do(x => query["email_SHA256"] = x);
-
                 uriBuilder.Query = query.ToString();
 
-                response = webClient.DownloadString(uriBuilder.Uri);
+                response = string.IsNullOrEmpty(request.data)
+                    ? webClient.DownloadString(uriBuilder.Uri)
+                    : webClient.UploadString(uriBuilder.Uri, $"data={request.data}");
             }
 
             var result = WebHelper.JsonDeserialize<SpamCheckResponse>(response);
 
             return result;
+        }
+
+        private static void SetWebHeaders(WebClient webClient)
+        {
+            var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
+
+            var context = HttpContext.Current;
+            if (context != null)
+            {
+                var headers = context.Request.Headers;
+                foreach (var kvp in headers.Keys.Cast<string>()
+                             .Select(x => new { key = x, value = headers[x] })
+                             .Where(x =>
+                                 !customRestrictedHeaders.Contains(x.key) &&
+                                 !WebHeaderCollection.IsRestricted(x.key)))
+                    webClient.Headers.Add(kvp.key, kvp.value);
+            }
+
+            webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
         }
     }
 }

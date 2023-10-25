@@ -32,5 +32,21 @@ namespace cleantalk.csharp.test
             Assert.IsNotNull(res1);
             Assert.IsNotEmpty(res1.Data);
         }
+
+        [Test]
+        public void SpamCheckMultipleRecordsTest()
+        {
+            // string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256
+            var req1 = new SpamCheckRequest(TestConstants.SpamCheckAuthKey)
+            {
+                data = "stop_email@example.com,10.0.0.1,10.0.0.2"
+            };
+            var res1 = _cleantalk.SpamCheck(req1);
+            Debug.WriteLine("req1=" + WebHelper.JsonSerialize(req1));
+            Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
+
+            Assert.IsNotNull(res1);
+            Assert.IsNotEmpty(res1.Data);
+        }
     }
 }

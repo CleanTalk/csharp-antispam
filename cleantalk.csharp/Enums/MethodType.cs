@@ -7,6 +7,7 @@ namespace cleantalk.csharp.Enums
         check_message,
         check_newuser,
         send_feedback,
-        spam_check
+        spam_check,
+        ip_info
     }
 }

@@ -128,30 +128,24 @@ namespace cleantalk.csharp.Request
         [DataMember(Name = "feedback")]
         public string Feedback { get; set; }
 
-        public void ValidateAndInit(MethodType methodType)
+        public void Validate()
         {
-            if (string.IsNullOrWhiteSpace(AuthKey)) throw new ArgumentNullException("AuthKey is empty");
+            if (string.IsNullOrWhiteSpace(AuthKey)) throw new ArgumentNullException(nameof(AuthKey));
 
-            MethodName = methodType.ToString();
-
-            switch (methodType)
+            switch (MethodName.ToEnum<MethodType>())
             {
                 case MethodType.check_message:
                     //nothing to do
                     break;
                 case MethodType.check_newuser:
-                    if (string.IsNullOrWhiteSpace(SenderNickname))
-                        throw new ArgumentNullException("SenderNickname is empty");
-
-                    if (string.IsNullOrWhiteSpace(SenderEmail)) throw new ArgumentNullException("SenderEmail is empty");
-
+                    if (string.IsNullOrWhiteSpace(SenderNickname)) throw new ArgumentNullException(nameof(SenderNickname));
+                    if (string.IsNullOrWhiteSpace(SenderEmail)) throw new ArgumentNullException(nameof(SenderEmail));
                     break;
                 case MethodType.send_feedback:
-                    if (string.IsNullOrWhiteSpace(Feedback)) throw new ArgumentNullException("Feedback is empty");
-
+                    if (string.IsNullOrWhiteSpace(Feedback)) throw new ArgumentNullException(nameof(Feedback));
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("methodType", methodType, null);
+                    throw new ArgumentOutOfRangeException(nameof(MethodName), MethodName, null);
             }
         }
     }
