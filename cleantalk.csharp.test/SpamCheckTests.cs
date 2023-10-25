@@ -8,6 +8,12 @@ namespace cleantalk.csharp.test
     [TestFixture]
     public class SpamCheckTests
     {
+        [SetUp]
+        protected void SetUp()
+        {
+            _cleantalk = new Cleantalk(Constants.SpamCheckServerUrl);
+        }
+
         private ICleantalk _cleantalk;
 
         [Test]
@@ -24,12 +30,7 @@ namespace cleantalk.csharp.test
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);
-        }
-
-        [SetUp]
-        protected void SetUp()
-        {
-            _cleantalk = new Cleantalk(Constants.SpamCheckServerUrl);
+            Assert.IsNotEmpty(res1.Data);
         }
     }
 }

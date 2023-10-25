@@ -39,5 +39,22 @@ namespace cleantalk.csharp.Helpers
                 ? string.Empty
                 : Encoding.UTF8.GetString(Encoding.GetEncoding("ISO8859-1").GetBytes(input));
         }
+
+        /// <summary>
+        ///     Monada "Do"
+        /// </summary>
+        /// <typeparam name="TInput"></typeparam>
+        /// <param name="o"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public static TInput Do<TInput>(this TInput o, Action<TInput> action)
+            where TInput : class
+        {
+            if (o == null) return null;
+            if (string.IsNullOrWhiteSpace(o as string)) return o;
+
+            action(o);
+            return o;
+        }
     }
 }

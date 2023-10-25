@@ -8,11 +8,33 @@ using cleantalk.csharp.Helpers;
 namespace cleantalk.csharp.Request
 {
     [DataContract]
-    public class CleantalkRequest : CleantalkRequestBase
+    public class CleantalkRequest
     {
-        public CleantalkRequest(string authKey) : base(authKey)
+        public CleantalkRequest(string authKey)
         {
+            AuthKey = authKey;
         }
+
+        /// <summary>
+        ///     Auth key
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "auth_key")]
+        public string AuthKey { get; set; }
+
+        /// <summary>
+        ///     Method name
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "method_name")]
+        public string MethodName { get; set; }
+
+        /// <summary>
+        ///     All http request headers
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "all_headers")]
+        public string AllHeaders { get; set; }
 
         /// <summary>
         ///     User message
@@ -106,9 +128,11 @@ namespace cleantalk.csharp.Request
         [DataMember(Name = "feedback")]
         public string Feedback { get; set; }
 
-        public override void ValidateAndInit(MethodType methodType)
+        public void ValidateAndInit(MethodType methodType)
         {
-            base.ValidateAndInit(methodType);
+            if (string.IsNullOrWhiteSpace(AuthKey)) throw new ArgumentNullException("AuthKey is empty");
+
+            MethodName = methodType.ToString();
 
             switch (methodType)
             {

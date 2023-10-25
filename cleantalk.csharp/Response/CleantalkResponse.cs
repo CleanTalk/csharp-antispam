@@ -8,6 +8,12 @@ namespace cleantalk.csharp.Response
     [DataContract]
     public class CleantalkResponse
     {
+        public CleantalkResponse()
+        {
+            Comment = string.Empty;
+            ErrStr = string.Empty;
+        }
+
         /// <summary>
         ///     Is stop words
         ///     @var int
@@ -130,14 +136,7 @@ namespace cleantalk.csharp.Response
             }
         }
 
-        [IgnoreDataMember]
-        public AnswerCodeType[] Codes { get; private set; }
-
-        public CleantalkResponse()
-        {
-            Comment = string.Empty;
-            ErrStr = string.Empty;
-        }
+        [IgnoreDataMember] public AnswerCodeType[] Codes { get; private set; }
 
         /// <summary>
         ///     Processing response data after action
