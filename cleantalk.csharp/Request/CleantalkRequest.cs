@@ -82,8 +82,8 @@ namespace cleantalk.csharp.Request
         [DataMember(Name = "sender_info")]
         public string SenderInfoString
         {
-            get => WebHelper.JsonSerialize(SenderInfo);
-            set => SenderInfo = WebHelper.JsonDeserialize<SenderInfo>(value);
+            get { return WebHelper.JsonSerialize(SenderInfo); }
+            set { SenderInfo = WebHelper.JsonDeserialize<SenderInfo>(value); }
         }
 
         [IgnoreDataMember] public SenderInfo SenderInfo { get; set; }
@@ -95,8 +95,8 @@ namespace cleantalk.csharp.Request
         [DataMember(Name = "post_info")]
         public string PostInfoString
         {
-            get => WebHelper.JsonSerialize(PostInfo);
-            set => PostInfo = WebHelper.JsonDeserialize<PostInfo>(value);
+            get { return WebHelper.JsonSerialize(PostInfo); }
+            set { PostInfo = WebHelper.JsonDeserialize<PostInfo>(value); }
         }
 
         [IgnoreDataMember] public PostInfo PostInfo { get; set; }
@@ -130,7 +130,7 @@ namespace cleantalk.csharp.Request
 
         public void Validate()
         {
-            if (string.IsNullOrWhiteSpace(AuthKey)) throw new ArgumentNullException(nameof(AuthKey));
+            if (string.IsNullOrWhiteSpace(AuthKey)) throw new ArgumentNullException("AuthKey");
 
             switch (MethodName.ToEnum<MethodType>())
             {
@@ -138,14 +138,14 @@ namespace cleantalk.csharp.Request
                     //nothing to do
                     break;
                 case MethodType.check_newuser:
-                    if (string.IsNullOrWhiteSpace(SenderNickname)) throw new ArgumentNullException(nameof(SenderNickname));
-                    if (string.IsNullOrWhiteSpace(SenderEmail)) throw new ArgumentNullException(nameof(SenderEmail));
+                    if (string.IsNullOrWhiteSpace(SenderNickname)) throw new ArgumentNullException("SenderNickname");
+                    if (string.IsNullOrWhiteSpace(SenderEmail)) throw new ArgumentNullException("SenderEmail");
                     break;
                 case MethodType.send_feedback:
-                    if (string.IsNullOrWhiteSpace(Feedback)) throw new ArgumentNullException(nameof(Feedback));
+                    if (string.IsNullOrWhiteSpace(Feedback)) throw new ArgumentNullException("Feedback");
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(MethodName), MethodName, null);
+                    throw new ArgumentOutOfRangeException("MethodName", MethodName, null);
             }
         }
     }

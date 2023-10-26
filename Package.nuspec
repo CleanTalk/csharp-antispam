@@ -16,9 +16,11 @@
 		<iconUrl>https://cleantalk.org/images/icons/icon-32x32.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<copyright>Copyright © 2024</copyright>
-		<dependencies/>
 		<references></references>
 		<tags>CleanTalk Antispam spam</tags>
+		<dependencies>
+		      <group targetFramework=".NETFramework4.8" />
+		</dependencies>
 	</metadata>
 	<files>
 		<file src="Build\cleantalk.csharp.dll" target="lib/net48"/>

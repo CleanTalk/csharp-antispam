@@ -35,6 +35,12 @@ namespace cleantalk.csharp
         /// <returns></returns>
         SpamCheckResponse SpamCheck(SpamCheckRequest request);
 
-        //TODO: method ip_info
+        /// <summary>
+        ///     This <see href="https://cleantalk.org/help/api-ip-info-country-code">method</see>. Country code by IP address.
+        /// </summary>
+        /// <param name="authKey"></param>
+        /// <param name="ipList"></param>
+        /// <returns></returns>
+        IpInfoResponse IpInfoCheck(string authKey, params string[] ipList);
     }
 }

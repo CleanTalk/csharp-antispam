@@ -37,7 +37,7 @@ namespace cleantalk.csharp.Helpers
         /// <returns></returns>
         public static T JsonDeserialize<T>(string json)
         {
-            if (json == null) return default;
+            if (json == null) return default(T);
 
             var decodedStr = HttpUtility.HtmlDecode(json);
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(decodedStr)))

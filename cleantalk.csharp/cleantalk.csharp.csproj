@@ -71,6 +71,7 @@
     <Compile Include="Request\PostInfo.cs" />
     <Compile Include="Request\SenderInfo.cs" />
     <Compile Include="Request\SpamCheckRequest.cs" />
+    <Compile Include="Response\IpInfoResponse.cs" />
     <Compile Include="Response\SpamCheckResponse.cs" />
   </ItemGroup>
   <ItemGroup>

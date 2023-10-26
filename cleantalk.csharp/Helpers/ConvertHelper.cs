@@ -50,15 +50,12 @@ namespace cleantalk.csharp.Helpers
         public static TInput Do<TInput>(this TInput o, Action<TInput> action)
             where TInput : class
         {
-            switch (o)
-            {
-                case null:
-                case string s when string.IsNullOrWhiteSpace(s):
-                    return null;
-                default:
-                    action(o);
-                    return o;
-            }
+            if (o == null) return null;
+
+            if (o is string && string.IsNullOrWhiteSpace(o.ToString())) return null;
+
+            action(o);
+            return o;
         }
     }
 }

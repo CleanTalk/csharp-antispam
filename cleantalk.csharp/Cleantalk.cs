@@ -15,6 +15,8 @@ namespace cleantalk.csharp
     [Serializable]
     public class Cleantalk : ICleantalk
     {
+        private static readonly string[] customRestrictedHeaders = { "Content-Length", "Connection", "Cookie" };
+
         public Cleantalk(string serverUrl = Constants.ServerUrl)
         {
             DebugLevel = 0;
@@ -111,7 +113,19 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        ///     Send data to the web server
+        ///     This <see href="https://cleantalk.org/help/api-ip-info-country-code">method</see>. Country code by IP address.
+        /// </summary>
+        /// <param name="authKey"></param>
+        /// <param name="ipList"></param>
+        /// <returns></returns>
+        public IpInfoResponse IpInfoCheck(string authKey, params string[] ipList)
+        {
+            var result = SendData(authKey, ipList);
+            return result;
+        }
+
+        /// <summary>
+        ///     Send POST data to the web server
         /// </summary>
         /// <returns></returns>
         private CleantalkResponse SendData(CleantalkRequest request, MethodType methodType)
@@ -137,7 +151,7 @@ namespace cleantalk.csharp
         }
 
         /// <summary>
-        ///     Send data to the web server for spam_check method
+        ///     Send GET and POST data to the web server for spam_check method
         /// </summary>
         /// <returns></returns>
         private SpamCheckResponse SendData(SpamCheckRequest request)
@@ -163,7 +177,7 @@ namespace cleantalk.csharp
 
                 response = string.IsNullOrEmpty(request.data)
                     ? webClient.DownloadString(uriBuilder.Uri)
-                    : webClient.UploadString(uriBuilder.Uri, $"data={request.data}");
+                    : webClient.UploadString(uriBuilder.Uri, "data=" + request.data);
             }
 
             var result = WebHelper.JsonDeserialize<SpamCheckResponse>(response);
@@ -171,10 +185,44 @@ namespace cleantalk.csharp
             return result;
         }
 
+        /// <summary>
+        ///     Send GET and POST data to the web server for ip_info method
+        /// </summary>
+        /// <returns></returns>
+        private IpInfoResponse SendData(string authKey, params string[] ipList)
+        {
+            string response;
+            using (var webClient = new WebClient())
+            {
+                webClient.Encoding = Encoding.UTF8;
+                SetWebHeaders(webClient);
+
+                var uriBuilder = new UriBuilder(ServerUrl);
+
+                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["method_name"] = MethodType.ip_info.ToString();
+                query["auth_key"] = authKey;
+
+                var postData = string.Empty;
+                if (ipList.Length == 1)
+                    query["ip"] = ipList.First();
+                else
+                    postData = "data=" + string.Join(",", ipList);
+
+                uriBuilder.Query = query.ToString();
+
+                response = string.IsNullOrEmpty(postData)
+                    ? webClient.DownloadString(uriBuilder.Uri)
+                    : webClient.UploadString(uriBuilder.Uri, postData);
+            }
+
+            var result = WebHelper.JsonDeserialize<IpInfoResponse>(response);
+
+            return result;
+        }
+
         private static void SetWebHeaders(WebClient webClient)
         {
-            var customRestrictedHeaders = new[] { "Content-Length", "Connection", "Cookie" };
-
             var context = HttpContext.Current;
             if (context != null)
             {
@@ -187,7 +235,7 @@ namespace cleantalk.csharp
                     webClient.Headers.Add(kvp.key, kvp.value);
             }
 
-            webClient.Headers[HttpRequestHeader.ContentType] = @"application/x-www-form-urlencoded";
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
         }
     }
 }
