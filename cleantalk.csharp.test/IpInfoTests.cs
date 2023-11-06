@@ -28,7 +28,7 @@ namespace cleantalk.csharp.test
         [Test]
         public void IpInfoMultipleRecordsTest()
         {
-            var res1 = _cleantalk.IpInfoCheck(TestConstants.AuthKey, "8.8.8.8", "213.239.245.253");
+            var res1 = _cleantalk.IpInfoCheck(TestConstants.AuthKey, "8.8.8.8", "213.239.245.253", "109.191.240.212");
             Debug.WriteLine("res1=" + WebHelper.JsonSerialize(res1));
 
             Assert.IsNotNull(res1);

@@ -19,7 +19,6 @@ namespace cleantalk.csharp.test
         [Test]
         public void SpamCheckTest()
         {
-            // string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256
             var req1 = new SpamCheckRequest(TestConstants.SpamCheckAuthKey)
             {
                 email = "stop_email@example.com",
@@ -36,7 +35,6 @@ namespace cleantalk.csharp.test
         [Test]
         public void SpamCheckErrorFormatTest()
         {
-            // string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256
             var req1 = new SpamCheckRequest(TestConstants.SpamCheckAuthKey)
             {
                 email = "stop_email@example.com@error",
@@ -53,7 +51,6 @@ namespace cleantalk.csharp.test
         [Test]
         public void SpamCheckMultipleRecordsTest()
         {
-            // string ip, string email, string date, string email_SHA256, string ip4_SHA256, string ip6_SHA256
             var req1 = new SpamCheckRequest(TestConstants.SpamCheckAuthKey)
             {
                 data = "stop_email@example.com,10.0.0.1,10.0.0.2"
