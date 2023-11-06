@@ -82,7 +82,7 @@ var res1 = _cleantalk.SpamCheck(req1);
 ```
 Result:
 ```json
-res1={
+{
   "data":
   {
     "stop_email@example.com":{
@@ -127,7 +127,7 @@ var res1 = _cleantalk.IpInfoCheck(AuthKey, "8.8.8.8", "213.239.245.253", "109.19
 ```
 Result:
 ```json
-res1={
+{
   "data":
   {
     "8.8.8.8":{"country_code":"US","country_name":"United States"},
