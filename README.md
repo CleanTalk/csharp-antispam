@@ -1,7 +1,10 @@
 csharp-antispam
 ===============
 
-CleanTalk service API for C#. It is invisible protection from spam, no captchas, no puzzles, no animals, and no math.
+# CleanTalk C# Anti-Spam
+
+Invisible spam protection for C# web apps — no CAPTCHA, no puzzles.  
+CleanTalk offers a lightweight **spam filter** and **form protection** middleware that works in the background, allowing developers to focus on features — not spam fixes.
 
 ## Actual API documentation
 
@@ -27,6 +30,32 @@ API sends the comment's text and several previous approved comments to the serve
 
 * [.Net Framework v4.8](https://dotnet.microsoft.com/download/dotnet-framework)
 * CleanTalk account https://cleantalk.org/register?product=anti-spam
+
+## Integration Example (ASP.NET Middleware)
+
+```csharp
+public void Configure(IApplicationBuilder app)
+{
+    app.UseCleanTalk(spamCheckOptions =>
+    {
+        spamCheckOptions.AuthKey = "YOUR_KEY";
+    });
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapPost("/contact", async context =>
+        {
+            var ct = context.RequestServices.GetRequiredService<ICleanTalkService>();
+            var isSpam = await ct.CheckMessageAsync(new SpamCheckRequest {
+                Message = await new StreamReader(context.Request.Body).ReadToEndAsync(),
+                SenderIp = context.Connection.RemoteIpAddress.ToString(),
+                SenderEmail = "user@example.com"
+            });
+            if (isSpam) context.Response.StatusCode = 403;
+            else await context.Response.WriteAsync("Thanks!");
+        });
+    });
+}
+This example demonstrates how to protect a simple POST form using CleanTalk’s middleware. It works invisibly — no CAPTCHA required.
 
 
 ## SPAM test examples
