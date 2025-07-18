@@ -1,4 +1,4 @@
-csharp-antispam
+CleanTalk .NET Spam Protection & C# Bot Filter — Easy Anti-Spam API Wrapper
 ===============
 
 # CleanTalk C# Anti-Spam
