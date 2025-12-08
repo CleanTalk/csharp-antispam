@@ -13,6 +13,7 @@ namespace cleantalk.csharp.Request
         public CleantalkRequest(string authKey)
         {
             AuthKey = authKey;
+            Agent = "csharp-v12";
         }
 
         /// <summary>
@@ -21,6 +22,13 @@ namespace cleantalk.csharp.Request
         /// </summary>
         [DataMember(Name = "auth_key")]
         public string AuthKey { get; set; }
+
+        /// <summary>
+        ///     Agent version
+        ///     @var string
+        /// </summary>
+        [DataMember(Name = "agent")]
+        public string Agent { get; set; }
 
         /// <summary>
         ///     Method name
