@@ -31,6 +31,10 @@ API sends the comment's text and several previous approved comments to the serve
 * [.Net Framework v4.8](https://dotnet.microsoft.com/download/dotnet-framework)
 * CleanTalk account https://cleantalk.org/register?product=anti-spam
 
+### Websites that trust CleanTalk!
+
+![CleanTalk Anti-Spam Rating](https://cleantalk.org/webpack/img/cleantalk_rating.png)
+
 ## Integration Example (ASP.NET Middleware)
 
 ```csharp
