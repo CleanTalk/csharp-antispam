@@ -6,6 +6,8 @@ CleanTalk .NET Spam Protection & C# Bot Filter — Easy Anti-Spam API Wrapper
 Invisible spam protection for C# web apps — no CAPTCHA, no puzzles.  
 CleanTalk offers a lightweight **spam filter** and **form protection** middleware that works in the background, allowing developers to focus on features — not spam fixes.
 
+If you find this project useful, please consider starring ⭐ it on GitHub — it helps us grow and support development!
+
 ## Actual API documentation
 
 * [check_message](https://cleantalk.org/help/api-check-message) - Check IPs, Emails and messages for spam activity
